@@ -19,6 +19,10 @@ class MainWindow(QMainWindow, QPushButton):
             QtWidgets.QPushButton, 'annotate_button')
         self.annotateB.clicked.connect(self.goto_annotate)
 
+        self.liveAudioB = self.findChild(
+            QtWidgets.QPushButton, 'liveAudio_button')
+        self.liveAudioB.clicked.connect(self.goto_liveAudio)
+
     def goto_visualize(self):
         visualise = visualisationScreen()
         widget.addWidget(visualise)
@@ -27,6 +31,11 @@ class MainWindow(QMainWindow, QPushButton):
     def goto_annotate(self):
         annotate = annotationScreen()
         widget.addWidget(annotate)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def goto_liveAudio(self):
+        liveAudio = liveAudioScreen()
+        widget.addWidget(liveAudio)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
@@ -44,10 +53,26 @@ class visualisationScreen(QWidget):
         widget.setCurrentIndex(widget.currentIndex() - 1)
         widget.setCurrentWidget(home)
 
+
 class annotationScreen(QWidget):
     def __init__(self):
         super(annotationScreen, self).__init__()
         loadUi('ui/annotate.ui', self)
+        self.homeB = self.findChild(
+            QtWidgets.QPushButton, 'home_button_annotator')
+        self.homeB.clicked.connect(self.goto_home)
+
+    def goto_home(self):
+        home = MainWindow()
+        widget.addWidget(home)
+        widget.setCurrentIndex(widget.currentIndex() - 1)
+        widget.setCurrentWidget(home)
+
+
+class liveAudioScreen(QMainWindow):
+    def __init__(self):
+        super(liveAudioScreen, self).__init__()
+        loadUi('ui/live_audio.ui', self)
 
 
 if __name__ == "__main__":
