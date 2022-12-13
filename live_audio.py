@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -76,9 +77,11 @@ class Ui_MainWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.gridLayout_4.addWidget(self.label, 0, 1, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(778, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            778, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem, 3, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(0, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            0, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem1, 2, 0, 1, 1)
         self.gridLayout_5.addLayout(self.gridLayout_4, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -96,15 +99,18 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Audio Device"))
         self.label_3.setText(_translate("MainWindow", "Window Length (>28)"))
         self.lineEdit.setText(_translate("MainWindow", "1000"))
-        self.label_4.setText(_translate("MainWindow", "Sampling Rate (>1000 Hz)"))
+        self.label_4.setText(_translate(
+            "MainWindow", "Sampling Rate (>1000 Hz)"))
         self.lineEdit_2.setText(_translate("MainWindow", "44100"))
         self.label_5.setText(_translate("MainWindow", "Down Sample (>0)"))
         self.lineEdit_3.setText(_translate("MainWindow", "1"))
-        self.label_6.setText(_translate("MainWindow", "Update Interval (1 to 100 ms)"))
+        self.label_6.setText(_translate(
+            "MainWindow", "Update Interval (1 to 100 ms)"))
         self.lineEdit_4.setText(_translate("MainWindow", "30"))
         self.pushButton.setText(_translate("MainWindow", "Plot It!"))
         self.pushButton_2.setText(_translate("MainWindow", "Stop"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">PyShine Live Voice Plot GUI</span></p></body></html>"))
+        self.label.setText(_translate(
+            "MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">EmotionGUI Live Voice Plot GUI</span></p></body></html>"))
 
 
 if __name__ == "__main__":
@@ -115,4 +121,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
