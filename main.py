@@ -73,6 +73,15 @@ class liveAudioScreen(QMainWindow):
     def __init__(self):
         super(liveAudioScreen, self).__init__()
         loadUi('ui/live_audio.ui', self)
+        self.homeB = self.findChild(
+            QtWidgets.QPushButton, 'home_button_live')
+        self.homeB.clicked.connect(self.goto_home)
+
+    def goto_home(self):
+        home = MainWindow()
+        widget.addWidget(home)
+        widget.setCurrentIndex(widget.currentIndex() - 1)
+        widget.setCurrentWidget(home)
 
 
 if __name__ == "__main__":
