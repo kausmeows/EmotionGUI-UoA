@@ -13,6 +13,8 @@ matplotlib.use('qt5agg')
 
 from recorder import MicrophoneRecorder, MplFigure
 
+rng = np.random.default_rng()
+
 class LiveFFTWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -29,13 +31,21 @@ class LiveFFTWidget(QWidget):
         # init MPL widget
         self.initMplWidget()
 
+        #stop the recording
+        self.abort()
+
     def initUI(self):
+        record_button = QtWidgets.QPushButton('Start')
+        stop_button = QtWidgets.QPushButton('Stop')
 
         hbox_gain = QtWidgets.QHBoxLayout()
         autoGain = QtWidgets.QLabel('Auto gain for frequency spectrum')
-        autoGainCheckBox = QtWidgets.QCheckBox(checked=True)
+        autoGainCheckBox = QtWidgets.QCheckBox(checked=False)
         hbox_gain.addWidget(autoGain)
         hbox_gain.addWidget(autoGainCheckBox)
+
+        hbox_gain.addWidget(record_button)
+        hbox_gain.addWidget(stop_button)
 
         # reference to checkbox
         self.autoGainCheckBox = autoGainCheckBox
@@ -70,6 +80,10 @@ class LiveFFTWidget(QWidget):
         timer.start(100)
         # keep reference to timer
         self.timer = timer
+
+        #if record_button is pressed.
+        record_button.clicked.connect(self.initData)
+        stop_button.clicked.connect(self.abort)
 
     def initData(self):
         mic = MicrophoneRecorder()
@@ -130,6 +144,9 @@ class LiveFFTWidget(QWidget):
             # refreshes the plots
             self.main_figure.canvas.draw()
 
+    def abort(self):  # executed when user selects "Stop" button
+        # terminates with exit code 0 (no error because user initiated quit)
+        return
 
 if __name__ == "__main__":
     import sys

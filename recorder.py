@@ -51,6 +51,9 @@ class MicrophoneRecorder(object):
         self.stream.close()
         self.p.terminate()
 
+    def save_audio():
+        pass
+
 
 class MplFigure(object):
     def __init__(self, parent):
