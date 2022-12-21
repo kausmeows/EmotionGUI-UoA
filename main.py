@@ -1,8 +1,12 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QWidget, QPushButton
-from home import Ui_MainWindow
+from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
+from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
+from PyQt5 import QtGui
+# from realtime_spectogram import RunProgram
+import realtime_spectogram as rs
+from file_processing import FileProcessing
 
 
 class MainWindow(QMainWindow, QPushButton):
@@ -10,6 +14,8 @@ class MainWindow(QMainWindow, QPushButton):
         super(MainWindow, self).__init__()
 
         loadUi('ui/home.ui', self)
+        pic = QPixmap('static/uoa_logo.png')
+        self.imglabel.setPixmap(pic)
 
         self.visualiseB = self.findChild(
             QtWidgets.QPushButton, 'visualise_button')
@@ -34,15 +40,32 @@ class MainWindow(QMainWindow, QPushButton):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def goto_liveAudio(self):
-        liveAudio = liveAudioScreen()
+        liveAudio = rs.RunProgram()
         widget.addWidget(liveAudio)
         widget.setCurrentIndex(widget.currentIndex() + 1)
+        liveAudioScreen(liveAudio.getHomeButton())
 
 
 class visualisationScreen(QWidget):
     def __init__(self):
         super(visualisationScreen, self).__init__()
         loadUi('ui/visualize.ui', self)
+        
+        # -------------------------------------------------------------
+        # to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
+        self.select_csv = self.findChild(
+            QtWidgets.QPushButton, 'select_csv')
+        self.select_csv.clicked.connect(lambda: self.textEdit.setText(FileProcessing.open_dialog_box(self)))
+        #--------------------------------------------------------------
+
+        # -------------------------------------------------------------
+        # to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
+        self.select_wav = self.findChild(
+            QtWidgets.QPushButton, 'select_wav')
+        self.select_wav.clicked.connect(
+            lambda: self.textEdit_2.setText(FileProcessing.open_dialog_box(self)))
+        #--------------------------------------------------------------
+        
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'pushButton_8')
         self.homeB.clicked.connect(self.goto_home)
@@ -52,7 +75,7 @@ class visualisationScreen(QWidget):
         widget.addWidget(home)
         widget.setCurrentIndex(widget.currentIndex() - 1)
         widget.setCurrentWidget(home)
-
+        
 
 class annotationScreen(QWidget):
     def __init__(self):
@@ -69,17 +92,17 @@ class annotationScreen(QWidget):
         widget.setCurrentWidget(home)
 
 
-class liveAudioScreen(QMainWindow):
-    def __init__(self):
+class liveAudioScreen(QMainWindow, QWidget):
+    def __init__(self, homeB):
         super(liveAudioScreen, self).__init__()
-        loadUi('ui/live_audio.ui', self)
-        self.homeB = self.findChild(
-            QtWidgets.QPushButton, 'home_button_live')
-        self.homeB.clicked.connect(self.goto_home)
+        # self.homeB = rs.RunProgram.getHomeButton(self)
+        self.homeButton = homeB
+        self.homeButton.clicked.connect(self.goto_home)
 
     def goto_home(self):
         home = MainWindow()
         widget.addWidget(home)
+        print("This func is called")
         widget.setCurrentIndex(widget.currentIndex() - 1)
         widget.setCurrentWidget(home)
 

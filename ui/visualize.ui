@@ -60,7 +60,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="select_csv">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -112,7 +112,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Plot Emotional Data of CSV File</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="select_wav">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -122,7 +122,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     </rect>
    </property>
    <property name="text">
-    <string>Select CSV File</string>
+    <string>Select WAV File</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">

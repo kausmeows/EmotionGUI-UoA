@@ -5,12 +5,15 @@ from os import remove, path, listdir
 import shutil
 from traceback import print_exc as trace_error
 from datetime import datetime
+import main
 
 if cursys() == 'Windows':
     from ctypes import windll
 
 from shutil import copy as shcopy
 from tempfile import gettempdir
+
+from PyQt5 import QtWidgets
 
 from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QMenu, QLineEdit, QLabel, QSpinBox, QCheckBox,
     QPushButton, QMessageBox, QWidget, QFileDialog, QComboBox, QTextEdit, QTabWidget, QVBoxLayout, QInputDialog, 
@@ -31,13 +34,14 @@ from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 import audio_processing as AP
+from PyQt5.uic import loadUi
 
 
 
 
 
 #   DEFINE CLASS FOR PROGRAM (TO BE CALLED IN MAIN)
-class RunProgram(QMainWindow):
+class RunProgram(QMainWindow, QWidget):
     
     
 # =============================================================================
@@ -128,8 +132,10 @@ class RunProgram(QMainWindow):
         self.threadpool.setMaxThreadCount(7)
         
         self.maxNfreqs = 200 #max number of frequency datapoints to plot
-            
-        
+
+        # adding a home page button to navigate back to the main menu
+        self.home_button_live = QtWidgets.QPushButton('Main Menu', self)
+        self.home_button_live.setObjectName("home_button_live")
         
         
 # =============================================================================
@@ -159,9 +165,6 @@ class RunProgram(QMainWindow):
         closetab.setShortcut('Ctrl+X')
         closetab.triggered.connect(self.closecurrenttab)
         FileMenu.addAction(closetab)
-        
-        
-
 
 # =============================================================================
 #     SIGNAL PROCESSOR TAB AND INPUTS HERE
@@ -209,7 +212,7 @@ class RunProgram(QMainWindow):
             self.alltabdata[curtabnum]["SpectroToolbar"] = CustomToolbar(self.alltabdata[curtabnum]["SpectroCanvas"], self)
             
 
-            #creating tab widget
+            #creating tab widg
             self.alltabdata[curtabnum]["tabwidget"].setLayout(self.alltabdata[curtabnum]["tablayout"])
             self.alltabdata[curtabnum]["tabwidget"].addTab(self.alltabdata[curtabnum]["mainsettingswidget"],"Spectrogram Settings")
             self.alltabdata[curtabnum]["tabwidget"].addTab(self.alltabdata[curtabnum]["plotsavewidget"],"Save Spectrogram/Audio")
@@ -227,6 +230,7 @@ class RunProgram(QMainWindow):
             self.alltabdata[curtabnum]["mainLayout"].addWidget(self.alltabdata[curtabnum]["SpectroCanvas"],2,1,1,6) # set dimensions
             self.alltabdata[curtabnum]["mainLayout"].addWidget(self.alltabdata[curtabnum]["tabwidget"],3,2,1,3)
             
+            self.alltabdata[curtabnum]["mainLayout"].addWidget(self.home_button_live)
             
             rowstretches = [1,1,30,9,1]
             for (r,s) in enumerate(rowstretches):
@@ -437,14 +441,17 @@ class RunProgram(QMainWindow):
             ##making the current layout for the tab
             self.alltabdata[curtabnum]["tab"].setLayout(self.alltabdata[curtabnum]["mainLayout"])
 
+            # self.home_button_live = self.findChild(
+            #     QtWidgets.QPushButton, 'home_button_live')
+            # self.home_button_live.clicked.connect(self.goto_home)
+
         except Exception: #if something breaks
             trace_error()
             self.posterror("Failed to build new tab")
-        
             
-    
+    def getHomeButton(self):
+        return self.home_button_live
             
-
 # =============================================================================
 #       Plot update and control, signal processor interactions
 # =============================================================================
@@ -1038,7 +1045,7 @@ class RunProgram(QMainWindow):
         gradient = QLinearGradient(0, 0, 0, 400)
         gradient.setColorAt(0.0, QColor(255,253,253))
         #gradient.setColorAt(1.0, QColor(248, 248, 255))
-        gradient.setColorAt(1.0, QColor(255, 225, 225))
+        gradient.setColorAt(1.0, QColor(225, 243, 255))
         p.setBrush(QPalette.Window, QBrush(gradient))
         tab.setAutoFillBackground(True)
         tab.setPalette(p)
@@ -1192,6 +1199,7 @@ class AudioWindow(QWidget):
         if not self.wasClosed:
             self.signals.closed.emit(False, "No", "No")
             self.wasClosed = True
+            
             
 #initializing signals for data to be passed back to main loop
 class AudioWindowSignals(QObject): 

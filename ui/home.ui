@@ -90,6 +90,25 @@
      <string>Live Audio</string>
     </property>
    </widget>
+   <widget class="QLabel" name="imglabel">
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>20</y>
+      <width>221</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../uoa_logo.qrc">:/newPrefix/uoa_logo.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -121,6 +140,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../uoa_logo.qrc"/>
+ </resources>
  <connections/>
 </ui>
