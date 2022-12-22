@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5 import QtGui
+import numpy as np
 # from realtime_spectogram import RunProgram
 import realtime_spectogram as rs
 from file_processing import FileProcessing
@@ -59,16 +60,28 @@ class visualisationScreen(QWidget):
         #--------------------------------------------------------------
 
         # -------------------------------------------------------------
-        # to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
+        # to get the dialog box when the 'Select WAV' button is clicked and write the path of file on the text editor
         self.select_wav = self.findChild(
             QtWidgets.QPushButton, 'select_wav')
         self.select_wav.clicked.connect(
             lambda: self.textEdit_2.setText(FileProcessing.open_dialog_box(self)))
         #--------------------------------------------------------------
+
+        self.pushButton_2.clicked.connect(lambda: self.plot())
+        self.pushButton.clicked.connect(lambda: self.clearPlot())
         
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'pushButton_8')
         self.homeB.clicked.connect(self.goto_home)
+    
+    def plot(self):
+        x = np.random.normal(size = 1000)
+        y = np.random.normal(size = (3, 1000))
+        for i in range(3):
+            self.graphicsView.plot(x, y[i], pen = (i, 3))
+
+    def clearPlot(self):
+        self.graphicsView.clear()
 
     def goto_home(self):
         home = MainWindow()

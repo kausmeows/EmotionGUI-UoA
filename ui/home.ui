@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Emotion GUI</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: qlineargradient(spread:pad, x1:0.472906, y1:0.982636, x2:0.447778, y2:0.409091, stop:0 rgba(226, 243, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="visualise_button">
     <property name="geometry">
@@ -47,6 +50,9 @@
       <family>Academy Engraved LET</family>
       <pointsize>64</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Emotion GUI</string>

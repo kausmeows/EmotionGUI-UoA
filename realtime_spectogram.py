@@ -230,6 +230,7 @@ class RunProgram(QMainWindow, QWidget):
             self.alltabdata[curtabnum]["mainLayout"].addWidget(self.alltabdata[curtabnum]["SpectroCanvas"],2,1,1,6) # set dimensions
             self.alltabdata[curtabnum]["mainLayout"].addWidget(self.alltabdata[curtabnum]["tabwidget"],3,2,1,3)
             
+            # adding the main menu button in the main layout
             self.alltabdata[curtabnum]["mainLayout"].addWidget(self.home_button_live)
             
             rowstretches = [1,1,30,9,1]
@@ -250,7 +251,7 @@ class RunProgram(QMainWindow, QWidget):
             self.alltabdata[curtabnum]["tabwidgets"]["datasource"] = QComboBox() 
             for source in self.audiosources:
                 self.alltabdata[curtabnum]["tabwidgets"]["datasource"].addItem(source)
-            self.alltabdata[curtabnum]["tabwidgets"]["datasource"].addItem('WAV File')
+            # self.alltabdata[curtabnum]["tabwidgets"]["datasource"].addItem('WAV File')
                 
             
             self.alltabdata[curtabnum]["tabwidgets"]["ctimetitle"] = QLabel("Spectrogram Time: ")
@@ -609,48 +610,48 @@ class RunProgram(QMainWindow, QWidget):
             
             datasource = self.alltabdata[curtabnum]["tabwidgets"]["datasource"].currentText()
             
-            if datasource.lower() == "wav file": #AUDIO FILE            
-                # getting filename
-                fname, ok = QFileDialog.getOpenFileName(self, 'Open file',self.defaultfiledir,"Source Data Files (*.WAV *.Wav *.wav *PCM *Pcm *pcm)","",self.fileoptions)
-                if not ok or fname == "":
-                    self.alltabdata[curtabnum]["isprocessing"] = False
-                    return
-                else:
-                    splitpath = path.split(fname)
-                    self.defaultfiledir = splitpath[0]
+            # if datasource.lower() == "wav file": #AUDIO FILE            
+            #     # getting filename
+            #     fname, ok = QFileDialog.getOpenFileName(self, 'Open file',self.defaultfiledir,"Source Data Files (*.WAV *.Wav *.wav *PCM *Pcm *pcm)","",self.fileoptions)
+            #     if not ok or fname == "":
+            #         self.alltabdata[curtabnum]["isprocessing"] = False
+            #         return
+            #     else:
+            #         splitpath = path.split(fname)
+            #         self.defaultfiledir = splitpath[0]
                     
-                self.alltabdata[curtabnum]["fromAudio"] = True
+            #     self.alltabdata[curtabnum]["fromAudio"] = True
                     
-                #determining which channel to use
-                #selec-2=no box opened, -1 = box opened, 0 = box closed w/t selection, > 0 = selected channel
-                try:
-                    file_info = wave.open(fname)
-                except:
-                    self.postwarning("Unable to read audio file")
-                    return 
+            #     #determining which channel to use
+            #     #selec-2=no box opened, -1 = box opened, 0 = box closed w/t selection, > 0 = selected channel
+            #     try:
+            #         file_info = wave.open(fname)
+            #     except:
+            #         self.postwarning("Unable to read audio file")
+            #         return 
                     
-                nchannels = file_info.getnchannels()
-                if nchannels == 1:
-                    datasource = f"AAA-00000-{fname}"
-                    self.initiate_processor(tabID, datasource)
-                else:
-                    if self.audioWindowOpened: #active tab already opened 
-                        self.postwarning("An audio channel selector dialog box has already been opened in another tab. Please close that box before processing an audio file with multiple channels in this tab.")
+            #     nchannels = file_info.getnchannels()
+            #     if nchannels == 1:
+            #         datasource = f"AAA-00000-{fname}"
+            #         self.initiate_processor(tabID, datasource)
+            #     else:
+            #         if self.audioWindowOpened: #active tab already opened 
+            #             self.postwarning("An audio channel selector dialog box has already been opened in another tab. Please close that box before processing an audio file with multiple channels in this tab.")
                         
-                    else:
-                        self.audioWindowOpened = True
-                        self.audioChannelSelector = AudioWindow(nchannels, tabID, fname) #creating and connecting window
-                        self.audioChannelSelector.signals.closed.connect(self.audioWindowClosed)
-                        self.audioChannelSelector.show() #bring window to front
-                        self.audioChannelSelector.raise_()
-                        self.audioChannelSelector.activateWindow()
+            #         else:
+            #             self.audioWindowOpened = True
+            #             self.audioChannelSelector = AudioWindow(nchannels, tabID, fname) #creating and connecting window
+            #             self.audioChannelSelector.signals.closed.connect(self.audioWindowClosed)
+            #             self.audioChannelSelector.show() #bring window to front
+            #             self.audioChannelSelector.raise_()
+            #             self.audioChannelSelector.activateWindow()
                         
                         
-            else: #SPEAKER STREAM
-                dataindex = self.audiosourceIDs[self.alltabdata[curtabnum]["tabwidgets"]["datasource"].currentIndex()]
-                datasource = f"MMM-{dataindex}"
-                self.alltabdata[curtabnum]["fromAudio"] = False
-                self.initiate_processor(tabID, datasource)
+            # else: #SPEAKER STREAM
+            dataindex = self.audiosourceIDs[self.alltabdata[curtabnum]["tabwidgets"]["datasource"].currentIndex()]
+            datasource = f"MMM-{dataindex}"
+            self.alltabdata[curtabnum]["fromAudio"] = False
+            self.initiate_processor(tabID, datasource)
                         
             
             
