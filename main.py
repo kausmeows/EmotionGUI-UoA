@@ -5,8 +5,10 @@ from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPu
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5 import QtGui
 import numpy as np
-# from realtime_spectogram import RunProgram
+import os
 import realtime_spectogram as rs
+from spectogram import SpectrogramWidget
+import runpy
 from file_processing import FileProcessing
 
 
@@ -41,10 +43,15 @@ class MainWindow(QMainWindow, QPushButton):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def goto_liveAudio(self):
-        liveAudio = rs.RunProgram()
+        # os.system('python spectogram.py')
+        # liveAudio = SpectrogramWidget()
+        # widget.addWidget(liveAudio)
+        # widget.setCurrentIndex(widget.currentIndex() + 1)
+        # liveAudioScreen(liveAudio.getHomeButton())
+
+        liveAudio = liveAudioScreen()
         widget.addWidget(liveAudio)
         widget.setCurrentIndex(widget.currentIndex() + 1)
-        liveAudioScreen(liveAudio.getHomeButton())
 
 
 class visualisationScreen(QWidget):
@@ -106,11 +113,14 @@ class annotationScreen(QWidget):
 
 
 class liveAudioScreen(QMainWindow, QWidget):
-    def __init__(self, homeB):
+    def __init__(self):
         super(liveAudioScreen, self).__init__()
-        # self.homeB = rs.RunProgram.getHomeButton(self)
-        self.homeButton = homeB
-        self.homeButton.clicked.connect(self.goto_home)
+        # loadUi('ui/audio.ui', self)
+
+
+        # super(liveAudioScreen, self).__init__()
+        # self.homeButton = homeB
+        # self.homeButton.clicked.connect(self.goto_home)
 
     def goto_home(self):
         home = MainWindow()

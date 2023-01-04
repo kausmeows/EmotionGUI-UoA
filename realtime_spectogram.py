@@ -33,7 +33,7 @@ from matplotlib.colors import ListedColormap, Normalize
 from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
-import audio_processing as AP
+from utils import audio_processing as AP
 from PyQt5.uic import loadUi
 
 
@@ -574,7 +574,7 @@ class RunProgram(QMainWindow, QWidget):
         self.spectralmap = ListedColormap(np.append(self.cdata, np.ones((np.shape(self.cdata)[0], 1)), axis=1))
         cbar_cm_object = self.buildspectrogramcolorbar(self.spectralmap, crange, self.alltabdata[curtabnum]["SpectroFig"], self.alltabdata[curtabnum]["SpectroAxes"])
         self.alltabdata[curtabnum]["SpectroCanvas"].draw()
-        self.levels = np.linspace(crange[0],crange[1],self.npoints)
+        # self.levels = np.linspace(crange[0],crange[1],self.npoints)
         
         return cbar_cm_object
         
