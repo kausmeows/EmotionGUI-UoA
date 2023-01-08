@@ -6,10 +6,11 @@ from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5 import QtGui
 import numpy as np
 import os
-import realtime_spectogram as rs
+import utils.realtime_spectogram as rs
 from spectogram import SpectrogramWidget
 import runpy
 from file_processing import FileProcessing
+from multimedia import VideoWindow
 
 
 class MainWindow(QMainWindow, QPushButton):
@@ -38,7 +39,7 @@ class MainWindow(QMainWindow, QPushButton):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def goto_annotate(self):
-        annotate = annotationScreen()
+        annotate = VideoWindow()
         widget.addWidget(annotate)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
@@ -100,7 +101,6 @@ class visualisationScreen(QWidget):
 class annotationScreen(QWidget):
     def __init__(self):
         super(annotationScreen, self).__init__()
-        loadUi('ui/annotate.ui', self)
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)

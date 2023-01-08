@@ -13,24 +13,11 @@
   <property name="windowTitle">
    <string>Annotation Screen</string>
   </property>
-  <widget class="QSlider" name="horizontalSlider">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>540</y>
-     <width>581</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>570</y>
+     <y>800</y>
      <width>100</width>
      <height>41</height>
     </rect>
@@ -43,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>570</y>
+     <y>800</y>
      <width>100</width>
      <height>41</height>
     </rect>
@@ -56,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>570</y>
+     <y>800</y>
      <width>100</width>
      <height>41</height>
     </rect>
@@ -69,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>570</y>
+     <y>800</y>
      <width>100</width>
      <height>41</height>
     </rect>
@@ -78,30 +65,11 @@
     <string>Forward</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>545</y>
-     <width>58</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Academy Engraved LET</family>
-     <pointsize>18</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Time:</string>
-   </property>
-  </widget>
   <widget class="QSlider" name="horizontalSlider_2">
    <property name="geometry">
     <rect>
      <x>490</x>
-     <y>620</y>
+     <y>630</y>
      <width>171</width>
      <height>25</height>
     </rect>
@@ -114,7 +82,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>620</y>
+     <y>630</y>
      <width>291</width>
      <height>25</height>
     </rect>
@@ -127,7 +95,7 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>620</y>
+     <y>630</y>
      <width>51</width>
      <height>21</height>
     </rect>
@@ -146,7 +114,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>620</y>
+     <y>630</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -224,19 +192,6 @@ in their respective directions.</string>
     <string>Main Menu</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_8">
-   <property name="geometry">
-    <rect>
-     <x>890</x>
-     <y>690</y>
-     <width>111</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Play</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton_9">
    <property name="geometry">
     <rect>
@@ -255,7 +210,7 @@ in their respective directions.</string>
     <rect>
      <x>760</x>
      <y>690</y>
-     <width>111</width>
+     <width>241</width>
      <height>51</height>
     </rect>
    </property>
@@ -309,6 +264,25 @@ in their respective directions.</string>
    </property>
    <property name="text">
     <string>Valence-Arousal Plot</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>10</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Academy Engraved LET</family>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>MP4 Multimedia</string>
    </property>
   </widget>
  </widget>
