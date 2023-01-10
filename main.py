@@ -4,13 +4,21 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5 import QtGui
+from PyQt5.QtCore import QDir, Qt, QUrl
+from PyQt5.QtGui import QIcon
 import numpy as np
 import os
 import utils.realtime_spectogram as rs
 from spectogram import SpectrogramWidget
 import runpy
 from file_processing import FileProcessing
-from multimedia import VideoWindow
+from utils.multimedia import VideoWindow
+
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
+                             QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import QMainWindow, QAction
 
 
 class MainWindow(QMainWindow, QPushButton):
@@ -39,7 +47,7 @@ class MainWindow(QMainWindow, QPushButton):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def goto_annotate(self):
-        annotate = VideoWindow()
+        annotate = annotationScreen()
         widget.addWidget(annotate)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
@@ -98,12 +106,106 @@ class visualisationScreen(QWidget):
         widget.setCurrentWidget(home)
         
 
-class annotationScreen(QWidget):
+class annotationScreen(QMainWindow):
     def __init__(self):
         super(annotationScreen, self).__init__()
+        loadUi('ui/annotate.ui', self)
+
+        self.setWindowTitle("Video Player")
+
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+
+        videoWidget = QVideoWidget()
+
+        #create open button
+        openBtn = QPushButton('Open Video')
+        openBtn.clicked.connect(self.openFile)
+
+        self.playButton = QPushButton()
+        self.playButton.setEnabled(False)
+        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.playButton.clicked.connect(self.play)
+
+        self.positionSlider = QSlider(Qt.Horizontal)
+        self.positionSlider.setRange(0, 0)
+        self.positionSlider.sliderMoved.connect(self.setPosition)
+
+        self.errorLabel = QLabel()
+        self.errorLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+
+        # Create exit action
+        exitAction = QAction(QIcon('exit.png'), '&Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(self.exitCall)
+
+        # Create a widget for window contents
+        wid = QWidget(self)
+        self.setCentralWidget(wid)
+
+        # Create layouts to place inside widget
+        controlLayout = QHBoxLayout()
+        controlLayout.setContentsMargins(0, 0, 0, 0)
+        controlLayout.addWidget(openBtn)
+        controlLayout.addWidget(self.playButton)
+        controlLayout.addWidget(self.positionSlider)
+
+        layout = QVBoxLayout()
+        layout.setContentsMargins(20, 40, 701, 191)
+        layout.addWidget(videoWidget)
+        layout.addLayout(controlLayout)
+        layout.addWidget(self.errorLabel)
+
+        # Set widget to contain window contents
+        wid.setLayout(layout)
+
+        self.mediaPlayer.setVideoOutput(videoWidget)
+        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.positionChanged.connect(self.positionChanged)
+        self.mediaPlayer.durationChanged.connect(self.durationChanged)
+        self.mediaPlayer.error.connect(self.handleError)
+
+
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)
+    
+    def openFile(self):
+        fileName, _ = QFileDialog.getOpenFileName(
+        self, "Open Movie", QDir.homePath())
+
+        if fileName != '':
+            self.mediaPlayer.setMedia(
+                QMediaContent(QUrl.fromLocalFile(fileName)))
+            self.playButton.setEnabled(True)
+
+    def exitCall(self):
+            sys.exit(app.exec_())
+
+    def play(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+        else:
+            self.mediaPlayer.play()
+
+    def mediaStateChanged(self, state):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        else:
+            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
+    def positionChanged(self, position):
+        self.positionSlider.setValue(position)
+
+    def durationChanged(self, duration):
+        self.positionSlider.setRange(0, duration)
+
+    def setPosition(self, position):
+        self.mediaPlayer.setPosition(position)
+
+    def handleError(self):
+        self.playButton.setEnabled(False)
+        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
 
     def goto_home(self):
         home = MainWindow()

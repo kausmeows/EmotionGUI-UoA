@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction
 from PyQt5.QtGui import QIcon
 import sys
 from PyQt5.uic import loadUi
-
+from file_processing import FileProcessing
 
 class VideoWindow(QMainWindow):
 
@@ -21,6 +21,10 @@ class VideoWindow(QMainWindow):
 
     videoWidget = QVideoWidget()
 
+    #create open button
+    openBtn = QPushButton('Open Video')
+    openBtn.clicked.connect(self.openFile)
+
     self.playButton = QPushButton()
     self.playButton.setEnabled(False)
     self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
@@ -33,24 +37,11 @@ class VideoWindow(QMainWindow):
     self.errorLabel = QLabel()
     self.errorLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-    # Create open action
-    openAction = QAction(QIcon('open.png'), '&Open', self)
-    openAction.setShortcut('Ctrl+O')
-    openAction.setStatusTip('Open movie')
-    openAction.triggered.connect(self.openFile)
-
     # Create exit action
     exitAction = QAction(QIcon('exit.png'), '&Exit', self)
     exitAction.setShortcut('Ctrl+Q')
     exitAction.setStatusTip('Exit application')
     exitAction.triggered.connect(self.exitCall)
-
-    # Create menu bar and add action
-    menuBar = self.menuBar()
-    fileMenu = menuBar.addMenu('&File')
-    # fileMenu.addAction(newAction)
-    fileMenu.addAction(openAction)
-    fileMenu.addAction(exitAction)
 
     # Create a widget for window contents
     wid = QWidget(self)
@@ -59,6 +50,7 @@ class VideoWindow(QMainWindow):
     # Create layouts to place inside widget
     controlLayout = QHBoxLayout()
     controlLayout.setContentsMargins(0, 0, 0, 0)
+    controlLayout.addWidget(openBtn)
     controlLayout.addWidget(self.playButton)
     controlLayout.addWidget(self.positionSlider)
 
@@ -76,7 +68,7 @@ class VideoWindow(QMainWindow):
     self.mediaPlayer.positionChanged.connect(self.positionChanged)
     self.mediaPlayer.durationChanged.connect(self.durationChanged)
     self.mediaPlayer.error.connect(self.handleError)
-
+        
   def openFile(self):
     fileName, _ = QFileDialog.getOpenFileName(
         self, "Open Movie", QDir.homePath())
