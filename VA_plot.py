@@ -49,24 +49,37 @@ class Valence_Arousal(QDialog):
         layout.addWidget(self.button)
         self.setLayout(layout)
 
+        # V-A plot basics
+        landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited', 'interested', 'happy', 'pleased', 'relaxed', 'content']
+        landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37, 0.2, 0.5, 0.35, 0.6, 0.5)
+        landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9, 0.7, 0.5, 0.35, -0.3, -0.45)
+
+        startR = (23, 253, 255, 137)
+        startG = (255, 231, 146, 227)
+        startB = (101, 45, 0, 181)
+
+        endR = (251, 153, 9, 234)
+        endG = (20, 34, 18, 115)
+        endB = (20, 195, 121, 141)
+
     def plot(self):
         ''' plot some random stuff '''
         # random data
-        data = [random.random() for i in range(10)]
+        # data = [random.random() for i in range(10)]
 
-        # instead of ax.hold(False)
-        self.figure.clear()
+        # # instead of ax.hold(False)
+        # self.figure.clear()
 
-        # create an axis
-        ax = self.figure.add_subplot(111)
+        # # create an axis
+        # ax = self.figure.add_subplot(111)
 
-        # discards the old graph
-        # ax.hold(False) # deprecated, see above
+        # # discards the old graph
+        # # ax.hold(False) # deprecated, see above
 
-        # plot data
-        ax.plot(data, '*-')
+        # # plot data
+        # ax.plot(data, '*-')
 
-        # refresh canvas
+        # # refresh canvas
         self.canvas.draw()
 
 
