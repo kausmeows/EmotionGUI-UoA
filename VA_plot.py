@@ -12,7 +12,7 @@ import utils.realtime_spectogram as rs
 from spectogram import SpectrogramWidget
 import runpy
 from file_processing import FileProcessing
-from utils.multimedia import VideoWindow
+from multimedia import VideoWindow
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -79,7 +79,10 @@ class Valence_Arousal(QDialog):
             axes.text(landmarkValence[point], landmarkArousal[point],
                       landmarkEmotions[point], fontsize='xx-small')
 
+        axes.scatter(0.6, 0.2, color='red', s=5)
+
         self.canvas.draw()
+
 
 
 if __name__ == '__main__':
@@ -89,3 +92,5 @@ if __name__ == '__main__':
     main.show()
 
     sys.exit(app.exec_())
+
+

@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Visualisation Screen</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -73,7 +76,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Select CSV File</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="plot_VA">
    <property name="geometry">
     <rect>
      <x>320</x>
@@ -200,7 +203,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Arousal:</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit_4">
+  <widget class="QTextEdit" name="valence_field">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -210,7 +213,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     </rect>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit_5">
+  <widget class="QTextEdit" name="arousal_field">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -220,7 +223,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_7">
+  <widget class="QPushButton" name="plotButton_manual">
    <property name="geometry">
     <rect>
      <x>340</x>
@@ -246,7 +249,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Main Menu</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="clear_button">
    <property name="geometry">
     <rect>
      <x>660</x>

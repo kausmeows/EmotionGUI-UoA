@@ -1,5 +1,7 @@
 import sys
+import csv
 from PyQt5.uic import loadUi
+import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
@@ -12,235 +14,332 @@ import utils.realtime_spectogram as rs
 from spectogram import SpectrogramWidget
 import runpy
 from file_processing import FileProcessing
-from utils.multimedia import VideoWindow
+from multimedia import VideoWindow
 
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
-                             QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
+							 QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
 from PyQt5.QtWidgets import QMainWindow, QAction
+from VA_plot import Valence_Arousal
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 
 class MainWindow(QMainWindow, QPushButton):
-    def __init__(self):
-        super(MainWindow, self).__init__()
+	def __init__(self):
+		super(MainWindow, self).__init__()
 
-        loadUi('ui/home.ui', self)
-        pic = QPixmap('static/uoa_logo.png')
-        self.imglabel.setPixmap(pic)
+		loadUi('ui/home.ui', self)
+		pic = QPixmap('static/uoa_logo.png')
+		self.imglabel.setPixmap(pic)
 
-        self.visualiseB = self.findChild(
-            QtWidgets.QPushButton, 'visualise_button')
-        self.visualiseB.clicked.connect(self.goto_visualize)
+		self.visualiseB = self.findChild(
+			QtWidgets.QPushButton, 'visualise_button')
+		self.visualiseB.clicked.connect(self.goto_visualize)
 
-        self.annotateB = self.findChild(
-            QtWidgets.QPushButton, 'annotate_button')
-        self.annotateB.clicked.connect(self.goto_annotate)
+		self.annotateB = self.findChild(
+			QtWidgets.QPushButton, 'annotate_button')
+		self.annotateB.clicked.connect(self.goto_annotate)
 
-        self.liveAudioB = self.findChild(
-            QtWidgets.QPushButton, 'liveAudio_button')
-        self.liveAudioB.clicked.connect(self.goto_liveAudio)
+		self.liveAudioB = self.findChild(
+			QtWidgets.QPushButton, 'liveAudio_button')
+		self.liveAudioB.clicked.connect(self.goto_liveAudio)
 
-    def goto_visualize(self):
-        visualise = visualisationScreen()
-        widget.addWidget(visualise)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+	def goto_visualize(self):
+		visualise = visualisationScreen()
+		widget.addWidget(visualise)
+		widget.setCurrentIndex(widget.currentIndex() + 1)
 
-    def goto_annotate(self):
-        annotate = annotationScreen()
-        widget.addWidget(annotate)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+	def goto_annotate(self):
+		annotate = annotationScreen()
+		widget.addWidget(annotate)
+		widget.setCurrentIndex(widget.currentIndex() + 1)
 
-    def goto_liveAudio(self):
-        # os.system('python spectogram.py')
-        # liveAudio = SpectrogramWidget()
-        # widget.addWidget(liveAudio)
-        # widget.setCurrentIndex(widget.currentIndex() + 1)
-        # liveAudioScreen(liveAudio.getHomeButton())
+	def goto_liveAudio(self):
+		# os.system('python spectogram.py')
+		# liveAudio = SpectrogramWidget()
+		# widget.addWidget(liveAudio)
+		# widget.setCurrentIndex(widget.currentIndex() + 1)
+		# liveAudioScreen(liveAudio.getHomeButton())
 
-        liveAudio = liveAudioScreen()
-        widget.addWidget(liveAudio)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+		liveAudio = liveAudioScreen()
+		widget.addWidget(liveAudio)
+		widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
-class visualisationScreen(QWidget):
-    def __init__(self):
-        super(visualisationScreen, self).__init__()
-        loadUi('ui/visualize.ui', self)
-        
-        # -------------------------------------------------------------
-        # to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
-        self.select_csv = self.findChild(
-            QtWidgets.QPushButton, 'select_csv')
-        self.select_csv.clicked.connect(lambda: self.textEdit.setText(FileProcessing.open_dialog_box(self)))
-        #--------------------------------------------------------------
+class  visualisationScreen(QWidget):
+	def __init__(self):
+		super(visualisationScreen, self).__init__()
+		loadUi('ui/visualize.ui', self)
+		
+		# -------------------------------------------------------------
+		# to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
+		self.select_csv = self.findChild(
+			QtWidgets.QPushButton, 'select_csv')
+		self.select_csv.clicked.connect(lambda: self.textEdit.setText(FileProcessing.open_dialog_box(self)))
+		#--------------------------------------------------------------
 
-        # -------------------------------------------------------------
-        # to get the dialog box when the 'Select WAV' button is clicked and write the path of file on the text editor
-        self.select_wav = self.findChild(
-            QtWidgets.QPushButton, 'select_wav')
-        self.select_wav.clicked.connect(
-            lambda: self.textEdit_2.setText(FileProcessing.open_dialog_box(self)))
-        #--------------------------------------------------------------
+		# -------------------------------------------------------------
+		# to get the dialog box when the 'Select WAV' button is clicked and write the path of file on the text editor
+		self.select_wav = self.findChild(
+			QtWidgets.QPushButton, 'select_wav')
+		self.select_wav.clicked.connect(
+			lambda: self.textEdit_2.setText(FileProcessing.open_dialog_box(self)))
+		#--------------------------------------------------------------
 
-        self.pushButton_2.clicked.connect(lambda: self.plot())
-        self.pushButton.clicked.connect(lambda: self.clearPlot())
-        
-        self.homeB = self.findChild(
-            QtWidgets.QPushButton, 'pushButton_8')
-        self.homeB.clicked.connect(self.goto_home)
-    
-    def plot(self):
-        x = np.random.normal(size = 1000)
-        y = np.random.normal(size = (3, 1000))
-        for i in range(3):
-            self.graphicsView.plot(x, y[i], pen = (i, 3))
+		# -------------------------------------------------------------
+		# to plot the csv file's points into the VA plot
+		self.plot_VA = self.findChild(
+			QtWidgets.QPushButton, 'plot_VA')
+		self.plot_VA.clicked.connect(self.updateCircle)
+		# -------------------------------------------------------------
 
-    def clearPlot(self):
-        self.graphicsView.clear()
+		# -------------------------------------------------------------
+		self.plotButton_manual = self.findChild(
+			QtWidgets.QPushButton, 'plotButton_manual')
+		self.plotButton_manual.clicked.connect(self.plotVA_Manual)
+		# -------------------------------------------------------------
 
-    def goto_home(self):
-        home = MainWindow()
-        widget.addWidget(home)
-        widget.setCurrentIndex(widget.currentIndex() - 1)
-        widget.setCurrentWidget(home)
-        
+		# -------------------------------------------------------------
+		# to clear the plot
+		self.clear_button = self.findChild(
+			QtWidgets.QPushButton, 'clear_button')
+		self.clear_button.clicked.connect(self.clear_plot)
+		# -------------------------------------------------------------
+		
+		# -------------------------------------------------------------
+		self.homeB = self.findChild(
+			QtWidgets.QPushButton, 'pushButton_8')
+		self.homeB.clicked.connect(self.goto_home)
+		# -------------------------------------------------------------
+
+		# a figure instance to plot on
+		self.figure = plt.figure()
+
+		# this is the Canvas Widget that displays the `figure`
+		# it takes the `figure` instance as a parameter to __init__
+		self.canvas = FigureCanvas(self.figure)
+
+		# this is the Navigation widget
+		# it takes the Canvas widget and a parent
+		self.toolbar = NavigationToolbar(self.canvas, self)
+
+		# draw the circle
+		self.createCircle()
+
+		# set the layout
+		layout = QVBoxLayout()
+		layout.setContentsMargins(750, 50, 50, 121)
+		layout.addWidget(self.toolbar)
+		layout.addWidget(self.canvas)
+		# layout.addWidget(self.button)
+		self.setLayout(layout)
+
+	def createCircle(self):
+		self.figure.clear()
+		self.axes = self.figure.subplots()
+
+		theta = np.linspace(0, 2*np.pi, 100)
+		radius = 1
+
+		a = radius*np.cos(theta)
+		b = radius*np.sin(theta)
+
+		self.axes.plot(a, b, color='k', linewidth=1)
+		self.axes.set_aspect(1)
+
+		self.axes.hlines(y=0, xmin=-1, xmax=1, linewidth=0.7, color='k')
+		self.axes.vlines(x=0, ymin=-1, ymax=1, linewidth=0.7, color='k')
+
+		self.axes.tick_params(axis='both', which='major', labelsize=5)
+		self.axes.tick_params(axis='both', which='minor', labelsize=5)
+
+		# V-A plot basic landmark emotions coordinates
+		self.landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
+							'interested', 'happy', 'pleased', 'relaxed', 'content']
+		self.landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37,
+						   0.2, 0.5, 0.35, 0.6, 0.5)
+		self.landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9,
+						   0.7, 0.5, 0.35, -0.3, -0.45)
+
+		for point in range(len(self.landmarkEmotions)):
+			self.axes.text(self.landmarkValence[point], self.landmarkArousal[point],
+					  self.landmarkEmotions[point], fontstyle='italic', fontsize='xx-small')
+
+		self.canvas.draw()
+	
+	def updateCircle(self):
+		csv_address = self.textEdit.toPlainText()
+
+		if(csv_address != ''):
+			# Get the csv file address from the text edit
+			VA = []
+			with open(csv_address, 'r') as file:
+				csvreader = csv.reader(file)
+				header = next(csvreader)
+				for row in csvreader:
+					VA.append(row)
+			# print(VA)
+		for VA_point in range(len(VA)):
+			valence = VA[VA_point][1]
+			arousal = VA[VA_point][2]
+			self.axes.scatter(float(valence), float(arousal), color='red', s=5)
+	
+		self.canvas.draw()
+
+	def plotVA_Manual(self):
+		manual_valence = self.valence_field.toPlainText()
+		manual_arousal = self.arousal_field.toPlainText()
+
+		if(manual_valence != '' and manual_arousal != ''):
+			self.axes.scatter(float(manual_valence), float(manual_arousal), color='blue', s=5)
+		self.canvas.draw()
+
+	def clear_plot(self):
+		self.createCircle()
+
+	def goto_home(self):
+		home = MainWindow()
+		widget.addWidget(home)
+		widget.setCurrentIndex(widget.currentIndex() - 1)
+		widget.setCurrentWidget(home)
+		
 
 class annotationScreen(QMainWindow):
-    def __init__(self):
-        super(annotationScreen, self).__init__()
-        loadUi('ui/annotate.ui', self)
+	def __init__(self):
+		super(annotationScreen, self).__init__()
+		loadUi('ui/annotate.ui', self)
 
-        self.setWindowTitle("Video Player")
+		self.setWindowTitle("Video Player")
 
-        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 
-        videoWidget = QVideoWidget()
+		videoWidget = QVideoWidget()
 
-        #create open button
-        openBtn = QPushButton('Open Video')
-        openBtn.clicked.connect(self.openFile)
+		#create open button
+		openBtn = QPushButton('Open Video')
+		openBtn.clicked.connect(self.openFile)
 
-        self.playButton = QPushButton()
-        self.playButton.setEnabled(False)
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.playButton.clicked.connect(self.play)
+		self.playButton = QPushButton()
+		self.playButton.setEnabled(False)
+		self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+		self.playButton.clicked.connect(self.play)
 
-        self.positionSlider = QSlider(Qt.Horizontal)
-        self.positionSlider.setRange(0, 0)
-        self.positionSlider.sliderMoved.connect(self.setPosition)
+		self.positionSlider = QSlider(Qt.Horizontal)
+		self.positionSlider.setRange(0, 0)
+		self.positionSlider.sliderMoved.connect(self.setPosition)
 
-        self.errorLabel = QLabel()
-        self.errorLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+		self.errorLabel = QLabel()
+		self.errorLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-        # Create exit action
-        exitAction = QAction(QIcon('exit.png'), '&Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(self.exitCall)
+		# Create exit action
+		exitAction = QAction(QIcon('exit.png'), '&Exit', self)
+		exitAction.setShortcut('Ctrl+Q')
+		exitAction.setStatusTip('Exit application')
+		exitAction.triggered.connect(self.exitCall)
 
-        # Create a widget for window contents
-        wid = QWidget(self)
-        self.setCentralWidget(wid)
+		# Create a widget for window contents
+		wid = QWidget(self)
+		self.setCentralWidget(wid)
 
-        # Create layouts to place inside widget
-        controlLayout = QHBoxLayout()
-        controlLayout.setContentsMargins(0, 0, 0, 0)
-        controlLayout.addWidget(openBtn)
-        controlLayout.addWidget(self.playButton)
-        controlLayout.addWidget(self.positionSlider)
+		# Create layouts to place inside widget
+		controlLayout = QHBoxLayout()
+		controlLayout.setContentsMargins(0, 0, 0, 0)
+		controlLayout.addWidget(openBtn)
+		controlLayout.addWidget(self.playButton)
+		controlLayout.addWidget(self.positionSlider)
 
-        layout = QVBoxLayout()
-        layout.setContentsMargins(20, 40, 701, 191)
-        layout.addWidget(videoWidget)
-        layout.addLayout(controlLayout)
-        layout.addWidget(self.errorLabel)
+		layout = QVBoxLayout()
+		layout.setContentsMargins(20, 40, 701, 191)
+		layout.addWidget(videoWidget)
+		layout.addLayout(controlLayout)
+		layout.addWidget(self.errorLabel)
 
-        # Set widget to contain window contents
-        wid.setLayout(layout)
+		# Set widget to contain window contents
+		wid.setLayout(layout)
 
-        self.mediaPlayer.setVideoOutput(videoWidget)
-        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
-        self.mediaPlayer.positionChanged.connect(self.positionChanged)
-        self.mediaPlayer.durationChanged.connect(self.durationChanged)
-        self.mediaPlayer.error.connect(self.handleError)
+		self.mediaPlayer.setVideoOutput(videoWidget)
+		self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+		self.mediaPlayer.positionChanged.connect(self.positionChanged)
+		self.mediaPlayer.durationChanged.connect(self.durationChanged)
+		self.mediaPlayer.error.connect(self.handleError)
 
 
-        self.homeB = self.findChild(
-            QtWidgets.QPushButton, 'home_button_annotator')
-        self.homeB.clicked.connect(self.goto_home)
-    
-    def openFile(self):
-        fileName, _ = QFileDialog.getOpenFileName(
-        self, "Open Movie", QDir.homePath())
+		self.homeB = self.findChild(
+			QtWidgets.QPushButton, 'home_button_annotator')
+		self.homeB.clicked.connect(self.goto_home)
+	
+	def openFile(self):
+		fileName, _ = QFileDialog.getOpenFileName(
+		self, "Open Movie", QDir.homePath())
 
-        if fileName != '':
-            self.mediaPlayer.setMedia(
-                QMediaContent(QUrl.fromLocalFile(fileName)))
-            self.playButton.setEnabled(True)
+		if fileName != '':
+			self.mediaPlayer.setMedia(
+				QMediaContent(QUrl.fromLocalFile(fileName)))
+			self.playButton.setEnabled(True)
 
-    def exitCall(self):
-            sys.exit(app.exec_())
+	def exitCall(self):
+			sys.exit(app.exec_())
 
-    def play(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
-        else:
-            self.mediaPlayer.play()
+	def play(self):
+		if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+			self.mediaPlayer.pause()
+		else:
+			self.mediaPlayer.play()
 
-    def mediaStateChanged(self, state):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
-        else:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+	def mediaStateChanged(self, state):
+		if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+			self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+		else:
+			self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-    def positionChanged(self, position):
-        self.positionSlider.setValue(position)
+	def positionChanged(self, position):
+		self.positionSlider.setValue(position)
 
-    def durationChanged(self, duration):
-        self.positionSlider.setRange(0, duration)
+	def durationChanged(self, duration):
+		self.positionSlider.setRange(0, duration)
 
-    def setPosition(self, position):
-        self.mediaPlayer.setPosition(position)
+	def setPosition(self, position):
+		self.mediaPlayer.setPosition(position)
 
-    def handleError(self):
-        self.playButton.setEnabled(False)
-        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
+	def handleError(self):
+		self.playButton.setEnabled(False)
+		self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
 
-    def goto_home(self):
-        home = MainWindow()
-        widget.addWidget(home)
-        widget.setCurrentIndex(widget.currentIndex() - 1)
-        widget.setCurrentWidget(home)
+	def goto_home(self):
+		home = MainWindow()
+		widget.addWidget(home)
+		widget.setCurrentIndex(widget.currentIndex() - 1)
+		widget.setCurrentWidget(home)
 
 
 class liveAudioScreen(QMainWindow, QWidget):
-    def __init__(self):
-        super(liveAudioScreen, self).__init__()
-        # loadUi('ui/audio.ui', self)
+	def __init__(self):
+		super(liveAudioScreen, self).__init__()
+		# loadUi('ui/audio.ui', self)
 
 
-        # super(liveAudioScreen, self).__init__()
-        # self.homeButton = homeB
-        # self.homeButton.clicked.connect(self.goto_home)
+		# super(liveAudioScreen, self).__init__()
+		# self.homeButton = homeB
+		# self.homeButton.clicked.connect(self.goto_home)
 
-    def goto_home(self):
-        home = MainWindow()
-        widget.addWidget(home)
-        print("This func is called")
-        widget.setCurrentIndex(widget.currentIndex() - 1)
-        widget.setCurrentWidget(home)
+	def goto_home(self):
+		home = MainWindow()
+		widget.addWidget(home)
+		widget.setCurrentIndex(widget.currentIndex() - 1)
+		widget.setCurrentWidget(home)
 
 
 if __name__ == "__main__":
-    try:
-        app = QApplication(sys.argv)
-        widget = QtWidgets.QStackedWidget()
+	try:
+		app = QApplication(sys.argv)
+		widget = QtWidgets.QStackedWidget()
 
-        home = MainWindow()
+		home = MainWindow()
 
-        widget.addWidget(home)
-        widget.showMaximized()
-        sys.exit(app.exec_())
-    except:
-        print("Exit")
+		widget.addWidget(home)
+		widget.showMaximized()
+		sys.exit(app.exec_())
+	except:
+		print("Exit")
