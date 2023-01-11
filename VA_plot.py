@@ -37,49 +37,48 @@ class Valence_Arousal(QDialog):
         # it takes the Canvas widget and a parent
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-        # Just some button connected to `plot` method
-        self.button = QPushButton('Plot')
-        self.button.clicked.connect(self.plot)
+        # draw the circle
+        self.createCircle()
 
         # set the layout
         layout = QVBoxLayout()
         layout.setContentsMargins(750, 50, 50, 121)
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
-        layout.addWidget(self.button)
+        # layout.addWidget(self.button)
         self.setLayout(layout)
 
+    def createCircle(self):
+        self.figure.clear()
+        axes = self.figure.subplots()
+
+        theta = np.linspace(0, 2*np.pi, 100)
+        radius = 1
+
+        a = radius*np.cos(theta)
+        b = radius*np.sin(theta)
+
+        axes.plot(a, b, color='k', linewidth=1)
+        axes.set_aspect(1)
+
+        axes.hlines(y=0, xmin=-1, xmax=1, linewidth=0.7, color='k')
+        axes.vlines(x=0, ymin=-1, ymax=1, linewidth=0.7, color='k')
+
+        axes.tick_params(axis='both', which='major', labelsize=5)
+        axes.tick_params(axis='both', which='minor', labelsize=5)
+
         # V-A plot basics
-        landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited', 'interested', 'happy', 'pleased', 'relaxed', 'content']
-        landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37, 0.2, 0.5, 0.35, 0.6, 0.5)
-        landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9, 0.7, 0.5, 0.35, -0.3, -0.45)
+        landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
+                            'interested', 'happy', 'pleased', 'relaxed', 'content']
+        landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37,
+                           0.2, 0.5, 0.35, 0.6, 0.5)
+        landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9,
+                           0.7, 0.5, 0.35, -0.3, -0.45)
 
-        startR = (23, 253, 255, 137)
-        startG = (255, 231, 146, 227)
-        startB = (101, 45, 0, 181)
+        for point in range(len(landmarkEmotions)):
+            axes.text(landmarkValence[point], landmarkArousal[point],
+                      landmarkEmotions[point], fontsize='xx-small')
 
-        endR = (251, 153, 9, 234)
-        endG = (20, 34, 18, 115)
-        endB = (20, 195, 121, 141)
-
-    def plot(self):
-        ''' plot some random stuff '''
-        # random data
-        # data = [random.random() for i in range(10)]
-
-        # # instead of ax.hold(False)
-        # self.figure.clear()
-
-        # # create an axis
-        # ax = self.figure.add_subplot(111)
-
-        # # discards the old graph
-        # # ax.hold(False) # deprecated, see above
-
-        # # plot data
-        # ax.plot(data, '*-')
-
-        # # refresh canvas
         self.canvas.draw()
 
 
