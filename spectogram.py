@@ -3,7 +3,6 @@ Tested on Linux with python 3.7
 Must have portaudio installed (e.g. dnf install portaudio-devel)
 pip install pyqtgraph pyaudio PyQt5
 """
-
 from utils import audio_processing as AP
 import sys
 import atexit
@@ -24,6 +23,7 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 import matplotlib
 import matplotlib.pyplot as plot
+matplotlib.use('TkAgg')
 
 from scipy.io import wavfile
 matplotlib.use('qt5agg')
@@ -32,6 +32,7 @@ form_class = uic.loadUiType("ui/audio.ui")[0]
 
 FS = 44100  # Hz
 CHUNKSZ = 1024  # samples
+counter = 0
 
 
 class MicrophoneRecorder():
@@ -56,14 +57,11 @@ class MicrophoneRecorder():
         self.frames.append(data)
         y = np.fromstring(data, 'int16')
         self.signal.emit(y)
-
+    
     def close(self):
-        with self.lock:
-            self.stop = True
         self.stream.stop_stream()
         self.stream.close()
         self.p.terminate()
-
 
 class SpectrogramWidget(QtWidgets.QMainWindow, form_class, MicrophoneRecorder):
     read_collected = QtCore.pyqtSignal(np.ndarray)
@@ -72,14 +70,26 @@ class SpectrogramWidget(QtWidgets.QMainWindow, form_class, MicrophoneRecorder):
         super(SpectrogramWidget, self).__init__()
         loadUi('ui/audio.ui', self)
 
+        self.timer.setText('0 sec')
+        self.stop_pressed = False
+        self.progressBar.setValue(0)
+
         self.mic = MicrophoneRecorder(self.read_collected)
+
+        self.timerrr = QtCore.QTimer()
+        self.timerrr.timeout.connect(self.update_counter)
+        self.timerrr.start(1000)  # QTimer takes ms
 
         self.img = pg.ImageItem()
         self.graphicsView.addItem(self.img)
-
         self.graphicsView.setTitle('Real-Time Spectogram')
-        self.graphicsView.setLabel('bottom', 'Time')
-        self.graphicsView.setLabel('left', 'Frequency')
+        # self.graphicsView.setYRange(0, 8000)
+        self.graphicsView.hideAxis('bottom')
+        self.graphicsView.hideAxis('left')
+        # self.graphicsView.setLimits(yMin=0, yMax=8000)
+        self.graphicsView_wave.setTitle('Audio Waveform')
+        self.graphicsView_wave.setLabel('left', 'Amplitude')
+        self.graphicsView_wave.hideAxis('bottom')
 
         self.audiosources, self.audiosourceIDs, self.PyAudioObject = AP.listaudiodevices()
 
@@ -105,7 +115,7 @@ class SpectrogramWidget(QtWidgets.QMainWindow, form_class, MicrophoneRecorder):
 
         self.stop = self.findChild(
             QtWidgets.QPushButton, 'stop')
-        self.stop.clicked.connect(self.mic.close)
+        self.stop.clicked.connect(self.stop_recording)
 
         self.save = self.findChild(
             QtWidgets.QPushButton, 'save_wav')
@@ -118,6 +128,13 @@ class SpectrogramWidget(QtWidgets.QMainWindow, form_class, MicrophoneRecorder):
         # prepare window for later use
         self.win = np.hanning(CHUNKSZ)
         self.show()
+    
+    def stop_recording(self):
+        self.mic.stream.stop_stream()
+        self.mic.stream.close()
+        self.mic.p.terminate()
+
+        self.stop_pressed = True
 
     def update(self, chunk):
         # normalized, windowed frequencies in data chunk
@@ -163,6 +180,17 @@ class SpectrogramWidget(QtWidgets.QMainWindow, form_class, MicrophoneRecorder):
         plot.xlabel('Time')
         plot.ylabel('Frequency')
         plot.show()
+    
+    def update_counter(self):
+        global counter
+        if self.stop_pressed != True:
+            counter += 1
+            self.timer.clear()
+            self.progressBar.setValue(counter)
+            self.timer.setText(str(counter) + ' sec')
+
+        else:
+            return
 
 
 if __name__ == '__main__':

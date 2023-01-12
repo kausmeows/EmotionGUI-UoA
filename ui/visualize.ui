@@ -58,7 +58,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>10</x>
      <y>240</y>
-     <width>571</width>
+     <width>621</width>
      <height>31</height>
     </rect>
    </property>
@@ -81,7 +81,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>320</x>
      <y>281</y>
-     <width>261</width>
+     <width>311</width>
      <height>41</height>
     </rect>
    </property>
@@ -107,7 +107,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>240</x>
      <y>430</y>
-     <width>261</width>
+     <width>391</width>
      <height>41</height>
     </rect>
    </property>
@@ -146,7 +146,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>10</x>
      <y>390</y>
-     <width>571</width>
+     <width>621</width>
      <height>31</height>
     </rect>
    </property>
@@ -252,8 +252,8 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QPushButton" name="clear_button">
    <property name="geometry">
     <rect>
-     <x>660</x>
-     <y>780</y>
+     <x>760</x>
+     <y>770</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -265,8 +265,8 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QPushButton" name="pushButton_6">
    <property name="geometry">
     <rect>
-     <x>900</x>
-     <y>780</y>
+     <x>1000</x>
+     <y>770</y>
      <width>131</width>
      <height>51</height>
     </rect>
@@ -278,8 +278,8 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QPushButton" name="pushButton_9">
    <property name="geometry">
     <rect>
-     <x>1140</x>
-     <y>780</y>
+     <x>1240</x>
+     <y>770</y>
      <width>131</width>
      <height>51</height>
     </rect>

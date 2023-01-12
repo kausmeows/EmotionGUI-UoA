@@ -2,7 +2,7 @@ import sys
 import csv
 from PyQt5.uic import loadUi
 import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5 import QtGui
@@ -10,10 +10,9 @@ from PyQt5.QtCore import QDir, Qt, QUrl
 from PyQt5.QtGui import QIcon
 import numpy as np
 import os
-import utils.realtime_spectogram as rs
-from spectogram import SpectrogramWidget
+from spectogram import MicrophoneRecorder, SpectrogramWidget
 import runpy
-from file_processing import FileProcessing
+from utils.file_processing import FileProcessing
 from multimedia import VideoWindow
 
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
@@ -21,10 +20,11 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
 							 QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
 from PyQt5.QtWidgets import QMainWindow, QAction
-from VA_plot import Valence_Arousal
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
+FS = 44100  # Hz
+CHUNKSZ = 1024  # samples
 
 class MainWindow(QMainWindow, QPushButton):
 	def __init__(self):
@@ -166,6 +166,9 @@ class  visualisationScreen(QWidget):
 		for point in range(len(self.landmarkEmotions)):
 			self.axes.text(self.landmarkValence[point], self.landmarkArousal[point],
 					  self.landmarkEmotions[point], fontstyle='italic', fontsize='xx-small')
+
+		self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
+		self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
 
 		self.canvas.draw()
 	
@@ -318,7 +321,8 @@ class liveAudioScreen(QMainWindow, QWidget):
 	def __init__(self):
 		super(liveAudioScreen, self).__init__()
 		# loadUi('ui/audio.ui', self)
-
+		w = SpectrogramWidget()
+		w.read_collected.connect(w.update)
 
 		# super(liveAudioScreen, self).__init__()
 		# self.homeButton = homeB

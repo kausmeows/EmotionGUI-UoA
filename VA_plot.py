@@ -11,7 +11,7 @@ import os
 import utils.realtime_spectogram as rs
 from spectogram import SpectrogramWidget
 import runpy
-from file_processing import FileProcessing
+from utils.file_processing import FileProcessing
 from multimedia import VideoWindow
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 

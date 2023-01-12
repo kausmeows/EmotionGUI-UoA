@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction
 from PyQt5.QtGui import QIcon
 import sys
 from PyQt5.uic import loadUi
-from file_processing import FileProcessing
+from utils.file_processing import FileProcessing
 
 class VideoWindow(QMainWindow):
 
