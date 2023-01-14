@@ -8,10 +8,7 @@ from PyQt5.QtCore import QDir, Qt, QUrl
 from PyQt5.QtGui import QIcon
 import numpy as np
 import os
-import utils.realtime_spectogram as rs
-from spectogram import SpectrogramWidget
 import runpy
-from utils.file_processing import FileProcessing
 from multimedia import VideoWindow
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 
@@ -24,7 +21,7 @@ import random
 class Valence_Arousal(QDialog):
     def __init__(self, parent=None):
         super(Valence_Arousal, self).__init__(parent)
-        loadUi('ui/visualize.ui', self)
+        loadUi('ui/annotate.ui', self)
 
         # a figure instance to plot on
         self.figure = plt.figure()
