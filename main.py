@@ -1,17 +1,18 @@
 import sys
 import csv
 from PyQt5.uic import loadUi
+from PyQt5 import QtGui
+import sip
+import matplotlib
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
-from PyQt5 import QtGui
 from PyQt5.QtCore import QDir, Qt, QUrl
 from PyQt5.QtGui import QIcon
 import numpy as np
-import os
-from spectogram import MicrophoneRecorder, SpectrogramWidget
-import runpy
+from spectogram import SpectrogramWidget
+from scipy.io import wavfile
 from utils.file_processing import FileProcessing
 from multimedia import VideoWindow
 
@@ -224,7 +225,7 @@ class annotationScreen(QMainWindow):
         videoWidget = QVideoWidget()
 
         # create open button
-        openBtn = QPushButton('Open Video')
+        openBtn = QPushButton('Open Video/Audio File')
         openBtn.clicked.connect(self.openFile)
 
         self.playButton = QPushButton()
@@ -280,9 +281,67 @@ class annotationScreen(QMainWindow):
         va_layout.addWidget(self.toolbar)
         va_layout.addWidget(self.canvas)
 
+        # -------------------------------------------------------------
+        # audio visualizer
+        self.open_audio = self.findChild(
+            QtWidgets.QPushButton, 'open_audio')
+        # self.open_audio.clicked.connect(self.audioVis)
+        # if(self.audio_filepath != ''):
+        #     self.audioVis()
+
+        self.clear_audio_vis = self.findChild(
+            QtWidgets.QPushButton, 'clear_audio_vis')
+        # self.clear_audio_vis.clicked.connect(self.clearAudioVisualizer)
+        # -------------------------------------------------------------
+
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)
+
+    def audioVis(self, filepath):
+        # self.clearAudioVisualizer(self.audio_figure)
+        # self.clearAudioVisualizer(self.audio_canvas)
+        # self.clearAudioVisualizer(self.audio_toolbar)
+
+        # a figure instance to plot on
+        self.audio_figure = plt.figure()
+
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.audio_canvas = FigureCanvas(self.audio_figure)
+
+        # this is the Navigation widget
+        self.audio_toolbar = NavigationToolbar(self.audio_canvas, self)
+
+        axes = self.audio_figure.subplots()
+
+        samplingFrequency, signalData = wavfile.read(filepath)
+        # Plot the signal read from wav file
+        plt.title('Spectrogram', fontsize=3)
+        # plt.rcParams["figure.figsize"] = [10, 10]
+        plt.subplots_adjust(left=0.100, right=0.900, top=0.860, bottom=0.140)
+        axes.tick_params(axis='both', which='major', labelsize=3)
+        axes.tick_params(axis='both', which='minor', labelsize=1)
+        plt.specgram(signalData, Fs=samplingFrequency)
+        plt.xlabel('Time')
+        plt.ylabel
+
+        self.audio_layout = self.audio_visualizer
+        self.audio_layout.addWidget(self.audio_toolbar)
+        self.audio_layout.addWidget(self.audio_canvas)
+
+        # vis = AudioVisualizer('hello_UoA.wav')
+        # p1 = Process(target=vis.playing_audio, args=())
+        # p1.start()
+        # p2 = Process(target=vis.showing_audiotrack, args=())
+        # p2.start()
+        # p1.join()
+        # p2.join()
+
+    def clearAudioVisualizer(self, widgetName):
+        self.audio_layout.removeWidget(widgetName)
+        widgetName.deleteLater()
+        widgetName = None
 
     def createCircle(self):
         self.figure.clear()
@@ -353,12 +412,13 @@ class annotationScreen(QMainWindow):
 
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(
-            self, "Open Movie", QDir.homePath())
+            self, "Open Movie/Audio", QDir.homePath())
 
         if fileName != '':
             self.mediaPlayer.setMedia(
                 QMediaContent(QUrl.fromLocalFile(fileName)))
             self.playButton.setEnabled(True)
+            self.audioVis(fileName)
 
     def exitCall(self):
         sys.exit(app.exec_())
