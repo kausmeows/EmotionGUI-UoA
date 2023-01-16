@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
 from PyQt5.QtWidgets import QMainWindow, QAction
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.widgets import Cursor
 
 FS = 44100  # Hz
 CHUNKSZ = 1024  # samples
@@ -190,7 +191,9 @@ class visualisationScreen(QWidget):
         for VA_point in range(len(VA)):
             valence = VA[VA_point][1]
             arousal = VA[VA_point][2]
-            self.axes.scatter(float(valence), float(arousal), color='red', s=5)
+            if(float(valence) >= -1 and float(valence) <= 1 and float(arousal) >= -1 and float(arousal) <= 1):
+                self.axes.scatter(float(valence), float(
+                    arousal), color='red', s=5)
 
         self.canvas.draw()
 
@@ -198,7 +201,8 @@ class visualisationScreen(QWidget):
         manual_valence = self.valence_field.toPlainText()
         manual_arousal = self.arousal_field.toPlainText()
 
-        if(manual_valence != '' and manual_arousal != ''):
+        if(manual_valence != '' and manual_arousal != '' and float(manual_valence) >= -1 and float(manual_valence) <= 1
+                and float(manual_arousal) >= -1 and float(manual_arousal) <= 1):
             self.axes.scatter(float(manual_valence), float(
                 manual_arousal), color='blue', s=5)
         self.canvas.draw()
@@ -227,6 +231,11 @@ class annotationScreen(QMainWindow):
         # create open button
         openBtn = QPushButton('Open Video/Audio File')
         openBtn.clicked.connect(self.openFile)
+
+        # to clear the plot
+        self.clear_button = self.findChild(
+            QtWidgets.QPushButton, 'clear_button')
+        self.clear_button.clicked.connect(self.clear_plot)
 
         self.playButton = QPushButton()
         self.playButton.setEnabled(False)
@@ -275,6 +284,9 @@ class annotationScreen(QMainWindow):
 
         # draw the circle
         self.createCircle()
+
+        self.figure.canvas.mpl_connect(
+            'button_press_event', self.annotateOnClick)
 
         # set the layout
         va_layout = self.va_plot
@@ -379,33 +391,12 @@ class annotationScreen(QMainWindow):
 
         self.canvas.draw()
 
-    def updateCircle(self):
-        csv_address = self.textEdit.toPlainText()
-
-        if(csv_address != ''):
-            # Get the csv file address from the text edit
-            VA = []
-            with open(csv_address, 'r') as file:
-                csvreader = csv.reader(file)
-                header = next(csvreader)
-                for row in csvreader:
-                    VA.append(row)
-            # print(VA)
-        for VA_point in range(len(VA)):
-            valence = VA[VA_point][1]
-            arousal = VA[VA_point][2]
-            self.axes.scatter(float(valence), float(arousal), color='red', s=5)
-
-        self.canvas.draw()
-
-    def plotVA_Manual(self):
-        manual_valence = self.valence_field.toPlainText()
-        manual_arousal = self.arousal_field.toPlainText()
-
-        if(manual_valence != '' and manual_arousal != ''):
-            self.axes.scatter(float(manual_valence), float(
-                manual_arousal), color='blue', s=5)
-        self.canvas.draw()
+    def annotateOnClick(self, event):
+        print(round(event.xdata, 2), round(event.ydata, 2))
+        if(event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
+            self.axes.scatter(round(event.xdata, 2), round(
+                event.ydata, 2), color='red', s=5)
+            self.canvas.draw()
 
     def clear_plot(self):
         self.createCircle()

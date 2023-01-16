@@ -137,7 +137,7 @@
      <string>Save as CSV</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="clear_button">
     <property name="geometry">
      <rect>
       <x>850</x>
