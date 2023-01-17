@@ -6,6 +6,7 @@ import sip
 import matplotlib
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QDir, Qt, QUrl, QPoint, QTime, QProcess
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5.QtCore import QDir, Qt, QUrl
@@ -423,6 +424,10 @@ class annotationScreen(QMainWindow):
             self.axes.scatter(round(event.xdata, 2), round(
                 event.ydata, 2), color='red', s=5)
             self.canvas.draw()
+            self.saveAsCSV(event.xdata, event.ydata)
+    
+    def saveAsCSV(self, xdata, ydata):
+        pass
 
     def clear_plot(self):
         self.createCircle()
@@ -456,9 +461,15 @@ class annotationScreen(QMainWindow):
 
     def positionChanged(self, position):
         self.positionSlider.setValue(position)
+        mtime = QTime(0, 0, 0, 0)
+        mtime = mtime.addMSecs(self.mediaPlayer.position())
+        self.lbl.setText(mtime.toString())
 
     def durationChanged(self, duration):
         self.positionSlider.setRange(0, duration)
+        mtime = QTime(0, 0, 0, 0)
+        mtime = mtime.addMSecs(self.mediaPlayer.duration())
+        self.elbl.setText(mtime.toString())
 
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)

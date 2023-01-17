@@ -31,6 +31,12 @@
      <height>161</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>There are three different ways that this GUI allows you to plot emotional 
 coordinates on the model. To plot a CSV or WAV file, click the button to select 
@@ -48,6 +54,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>221</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>1. Plot a CSV file:</string>
@@ -72,6 +84,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Select CSV File</string>
    </property>
@@ -84,6 +102,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>311</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Plot Emotional Data of CSV File</string>
@@ -98,6 +122,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>!</string>
    </property>
@@ -110,6 +140,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>391</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Plot Emotional Data of CSV File</string>
@@ -124,6 +160,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Select WAV File</string>
    </property>
@@ -136,6 +178,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>261</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>2. Plot a WAV file with a model:</string>
@@ -160,6 +208,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Change Model</string>
    </property>
@@ -172,6 +226,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>381</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>3. Set coordinates and plot manually</string>
@@ -186,6 +246,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Valence:</string>
    </property>
@@ -198,6 +264,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>71</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Arousal:</string>
@@ -232,6 +304,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Plot</string>
    </property>
@@ -244,6 +322,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <width>341</width>
      <height>51</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Main Menu</string>
@@ -258,6 +342,12 @@ fields next to 'Valence' and 'Arousal' and then click plot.
      <height>51</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
    <property name="text">
     <string>Clear</string>
    </property>
@@ -267,9 +357,15 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>890</x>
      <y>770</y>
-     <width>121</width>
+     <width>141</width>
      <height>51</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Save as CSV</string>
@@ -286,7 +382,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
    </property>
    <property name="font">
     <font>
-     <family>Academy Engraved LET</family>
+     <family>Arial</family>
      <pointsize>16</pointsize>
     </font>
    </property>
