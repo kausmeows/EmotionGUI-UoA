@@ -177,6 +177,8 @@ class visualisationScreen(QWidget):
         self.canvas.draw()
 
     def updateCircle(self):
+        self.RGB_values = [[255 / 255, 0 / 255, 0 / 255], [255 / 255, 255 / 255, 0 / 255],
+                           [0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
         csv_address = self.textEdit.toPlainText()
 
         if(csv_address != ''):
@@ -188,14 +190,38 @@ class visualisationScreen(QWidget):
                 for row in csvreader:
                     VA.append(row)
             # print(VA)
+
+        self.last_time_sec = VA[len(VA)-1][0]
         for VA_point in range(len(VA)):
+            time = VA[VA_point][0]
             valence = VA[VA_point][1]
             arousal = VA[VA_point][2]
             if(float(valence) >= -1 and float(valence) <= 1 and float(arousal) >= -1 and float(arousal) <= 1):
-                self.axes.scatter(float(valence), float(
-                    arousal), color='red', s=5)
+                self.plotColorGradedPoints(valence, arousal, time)
 
         self.canvas.draw()
+
+    def plotColorGradedPoints(self, valence, arousal, time):
+        if(float(time) <= float(self.last_time_sec) / 3):
+            self.axes.scatter(float(valence), float(arousal),
+                              color=self.RGB_values[0], s=5)
+            # self.RGB_values[0][0] = self.RGB_values[0][0] - 0.001
+            self.RGB_values[0][1] = self.RGB_values[0][1] + 0.05
+            # self.RGB_values[0][2] = self.RGB_values[0][2] + 0.01
+
+        if(float(time) > float(self.last_time_sec) / 3 and float(time) <= 2 * float(self.last_time_sec) / 3):
+            self.axes.scatter(float(valence), float(arousal),
+                              color=self.RGB_values[1], s=5)
+            self.RGB_values[1][0] = self.RGB_values[1][0] - 0.02
+            self.RGB_values[1][1] = self.RGB_values[1][1] - 0.02
+            self.RGB_values[1][2] = self.RGB_values[1][2] + 0.05
+
+        elif(float(time) > 2 * float(self.last_time_sec) / 3):
+            self.axes.scatter(float(valence), float(
+                arousal), color=self.RGB_values[2], s=5)
+            # self.RGB_values[2][0] = self.RGB_values[2][0] + 0.05
+            # self.RGB_values[2][1] = self.RGB_values[2][1] + 0.05
+            self.RGB_values[2][2] = self.RGB_values[2][2] - 0.05
 
     def plotVA_Manual(self):
         manual_valence = self.valence_field.toPlainText()
