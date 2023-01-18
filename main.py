@@ -169,8 +169,10 @@ class visualisationScreen(QWidget):
                                 0.7, 0.5, 0.35, -0.3, -0.45)
 
         for point in range(len(self.landmarkEmotions)):
-            self.axes.text(self.landmarkValence[point], self.landmarkArousal[point],
-                           self.landmarkEmotions[point], fontstyle='italic', fontsize='xx-small')
+            self.axes.scatter(self.landmarkValence,
+                              self.landmarkArousal, color='k', s=5)
+            self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
+                           self.landmarkEmotions[point], fontsize='xx-small')
 
         self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
         self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -410,8 +412,10 @@ class annotationScreen(QMainWindow):
                                 0.7, 0.5, 0.35, -0.3, -0.45)
 
         for point in range(len(self.landmarkEmotions)):
-            self.axes.text(self.landmarkValence[point], self.landmarkArousal[point],
-                           self.landmarkEmotions[point], fontstyle='italic', fontsize='xx-small')
+            self.axes.scatter(self.landmarkValence,
+                              self.landmarkArousal, color='k', s=5)
+            self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
+                           self.landmarkEmotions[point], fontsize='xx-small')
 
         self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
         self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -425,7 +429,7 @@ class annotationScreen(QMainWindow):
                 event.ydata, 2), color='red', s=5)
             self.canvas.draw()
             self.saveAsCSV(event.xdata, event.ydata)
-    
+
     def saveAsCSV(self, xdata, ydata):
         pass
 
