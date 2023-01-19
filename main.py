@@ -63,12 +63,6 @@ class MainWindow(QMainWindow, QPushButton):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def goto_liveAudio(self):
-        # os.system('python spectogram.py')
-        # liveAudio = SpectrogramWidget()
-        # widget.addWidget(liveAudio)
-        # widget.setCurrentIndex(widget.currentIndex() + 1)
-        # liveAudioScreen(liveAudio.getHomeButton())
-
         liveAudio = liveAudioScreen()
         widget.addWidget(liveAudio)
         widget.setCurrentIndex(widget.currentIndex() + 1)
@@ -253,6 +247,10 @@ class annotationScreen(QMainWindow):
         super(annotationScreen, self).__init__()
         loadUi('ui/annotate.ui', self)
 
+        self.valence_points = []
+        self.arousal_points = []
+        self.time_points = []
+
         self.setWindowTitle("Video Player")
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -324,28 +322,13 @@ class annotationScreen(QMainWindow):
         va_layout.addWidget(self.toolbar)
         va_layout.addWidget(self.canvas)
 
-        # -------------------------------------------------------------
-        # audio visualizer
-        self.open_audio = self.findChild(
-            QtWidgets.QPushButton, 'open_audio')
-        # self.open_audio.clicked.connect(self.audioVis)
-        # if(self.audio_filepath != ''):
-        #     self.audioVis()
-
-        self.clear_audio_vis = self.findChild(
-            QtWidgets.QPushButton, 'clear_audio_vis')
-        # self.clear_audio_vis.clicked.connect(self.clearAudioVisualizer)
-        # -------------------------------------------------------------
+        self.save_CSV_button.clicked.connect(self.saveAsCSV)
 
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)
 
     def audioVis(self, filepath):
-        # self.clearAudioVisualizer(self.audio_figure)
-        # self.clearAudioVisualizer(self.audio_canvas)
-        # self.clearAudioVisualizer(self.audio_toolbar)
-
         # a figure instance to plot on
         self.audio_figure = plt.figure()
 
@@ -372,14 +355,6 @@ class annotationScreen(QMainWindow):
         self.audio_layout = self.audio_visualizer
         self.audio_layout.addWidget(self.audio_toolbar)
         self.audio_layout.addWidget(self.audio_canvas)
-
-        # vis = AudioVisualizer('hello_UoA.wav')
-        # p1 = Process(target=vis.playing_audio, args=())
-        # p1.start()
-        # p2 = Process(target=vis.showing_audiotrack, args=())
-        # p2.start()
-        # p1.join()
-        # p2.join()
 
     def clearAudioVisualizer(self, widgetName):
         self.audio_layout.removeWidget(widgetName)
@@ -430,10 +405,21 @@ class annotationScreen(QMainWindow):
             self.axes.scatter(round(event.xdata, 2), round(
                 event.ydata, 2), color='red', s=5)
             self.canvas.draw()
-            self.saveAsCSV(event.xdata, event.ydata)
+            self.savePoints(round(event.xdata, 2), round(event.ydata, 2))
 
-    def saveAsCSV(self, xdata, ydata):
-        pass
+    def savePoints(self, xdata, ydata):
+        self.valence_points.append(xdata)
+        self.arousal_points.append(ydata)
+        self.time_points.append(self.seconds)
+
+    def saveAsCSV(self):
+        header = ["Time", "Valence", "Arousal"]
+        with open('CSV_Outputs/annotation/example.csv', 'w+', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(header)
+            rows = [(str(time), str(valence), str(arousal)) for time, valence, arousal in zip(self.time_points,
+                self.valence_points, self.arousal_points)]
+            writer.writerows(rows)
 
     def clear_plot(self):
         self.createCircle()
@@ -469,6 +455,7 @@ class annotationScreen(QMainWindow):
         self.positionSlider.setValue(position)
         mtime = QTime(0, 0, 0, 0)
         mtime = mtime.addMSecs(self.mediaPlayer.position())
+        self.seconds = QTime(0, 0, 0, 0).secsTo(mtime)
         self.lbl.setText(mtime.toString())
 
     def durationChanged(self, duration):
@@ -639,7 +626,6 @@ if __name__ == "__main__":
         widget = QtWidgets.QStackedWidget()
 
         home = MainWindow()
-
         widget.addWidget(home)
         widget.showMaximized()
         sys.exit(app.exec_())
