@@ -1,18 +1,17 @@
 import sys
 import csv
+import wave
 from PyQt5.uic import loadUi
-from PyQt5 import QtGui
-import sip
-import matplotlib
+import pyaudio
 import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtCore import QDir, Qt, QUrl, QPoint, QTime, QProcess
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
 from PyQt5.QtCore import QDir, Qt, QUrl
 from PyQt5.QtGui import QIcon
 import numpy as np
-from spectogram import SpectrogramWidget
+from spectogram import MicrophoneRecorder, SpectrogramWidget
 from scipy.io import wavfile
 from utils.file_processing import FileProcessing
 from multimedia import VideoWindow
@@ -24,10 +23,13 @@ from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
 from PyQt5.QtWidgets import QMainWindow, QAction
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.widgets import Cursor
+import pyqtgraph as pg
+from utils import audio_processing as AP
 
 FS = 44100  # Hz
 CHUNKSZ = 1024  # samples
+form_class = uic.loadUiType("ui/audio.ui")[0]
+counter = 0
 
 
 class MainWindow(QMainWindow, QPushButton):
@@ -224,7 +226,7 @@ class visualisationScreen(QWidget):
                 arousal), color=self.RGB_values[2], s=5)
             # self.RGB_values[2][0] = self.RGB_values[2][0] + 0.05
             # self.RGB_values[2][1] = self.RGB_values[2][1] + 0.05
-            self.RGB_values[2][2] = self.RGB_values[2][2] - 0.05
+            self.RGB_values[2][2] = self.RGB_values[2][2] - 0.02
 
     def plotVA_Manual(self):
         manual_valence = self.valence_field.toPlainText()
@@ -490,15 +492,139 @@ class annotationScreen(QMainWindow):
 
 
 class liveAudioScreen(QMainWindow, QWidget):
+    read_collected = QtCore.pyqtSignal(np.ndarray)
+
     def __init__(self):
         super(liveAudioScreen, self).__init__()
-        # loadUi('ui/audio.ui', self)
-        w = SpectrogramWidget()
-        w.read_collected.connect(w.update)
+        loadUi('ui/audio.ui', self)
 
-        # super(liveAudioScreen, self).__init__()
-        # self.homeButton = homeB
-        # self.homeButton.clicked.connect(self.goto_home)
+        self.timer.setText('0 sec')
+        self.stop_pressed = False
+        self.progressBar.setValue(0)
+
+        self.mic = MicrophoneRecorder(self.read_collected)
+        self.read_collected.connect(self.update)
+
+        # time (seconds) between reads
+        interval = FS/CHUNKSZ
+        self.t = QtCore.QTimer()
+        self.t.timeout.connect(self.mic.read)
+        self.t.start(1000/interval)  # QTimer takes ms
+
+        self.timerrr = QtCore.QTimer()
+        self.timerrr.timeout.connect(self.update_counter)
+        self.timerrr.start(1000)  # QTimer takes ms
+
+        self.img = pg.ImageItem()
+        self.graphicsView.addItem(self.img)
+        self.graphicsView.setTitle('Real-Time Spectogram')
+        # self.graphicsView.setYRange(0, 8000)
+        self.graphicsView.hideAxis('bottom')
+        self.graphicsView.hideAxis('left')
+        # self.graphicsView.setLimits(yMin=0, yMax=8000)
+        self.graphicsView_wave.setTitle('Audio Waveform')
+        self.graphicsView_wave.setLabel('left', 'Amplitude')
+        self.graphicsView_wave.hideAxis('bottom')
+
+        self.audiosources, self.audiosourceIDs, self.PyAudioObject = AP.listaudiodevices()
+
+        for source in self.audiosources:
+            self.data_source.addItem(source)
+
+        self.img_array = np.zeros((1000, int(CHUNKSZ/2+1)))
+
+        # bipolar colormap
+        pos = np.array([0., 1., 0.5, 0.25, 0.75])
+        color = np.array([[0, 255, 255, 255], [255, 255, 0, 255], [
+                         0, 0, 0, 255], (0, 0, 255, 255), (255, 0, 0, 255)], dtype=np.ubyte)
+        cmap = pg.ColorMap(pos, color)
+        lut = cmap.getLookupTable(0.0, 1.0, 256)
+
+        # set colormap
+        self.img.setLookupTable(lut)
+        # self.img.setLevels([-10, 600])
+        self.img.setLevels([-50, 600])
+
+        # plotting the audio waveform
+        self.pdataitem = self.graphicsView_wave.plot(self.mic.frames)
+
+        self.stop = self.findChild(
+            QtWidgets.QPushButton, 'stop')
+        self.stop.clicked.connect(self.stop_recording)
+
+        self.save = self.findChild(
+            QtWidgets.QPushButton, 'save_wav')
+        self.save.clicked.connect(self.save_audio)
+
+        self.save_spec = self.findChild(
+            QtWidgets.QPushButton, 'save_png')
+        self.save_spec.clicked.connect(self.save_photo)
+
+        # prepare window for later use
+        self.win = np.hanning(CHUNKSZ)
+        self.show()
+
+    def stop_recording(self):
+        self.mic.stream.stop_stream()
+        self.mic.stream.close()
+        self.mic.p.terminate()
+
+        self.stop_pressed = True
+
+    def update(self, chunk):
+        # normalized, windowed frequencies in data chunk
+        spec = np.fft.rfft(chunk*self.win) / CHUNKSZ
+        # get magnitude
+        psd = abs(spec)
+        # convert to dB scale
+        psd = 20 * np.log10(psd)
+
+        # roll down one and replace leading edge with new data
+        self.img_array = np.roll(self.img_array, -1, 0)
+        self.img_array[-1:] = psd
+
+        # update the plotted variable for audio waveform
+        self.pdataitem.setData(chunk)
+
+        self.img.setImage(self.img_array, autoLevels=False)
+
+    def save_audio(self):
+        sound_file = wave.open("hello_UoA.wav", "wb")
+        print("saving")
+        sound_file.setnchannels(1)
+        sound_file.setsampwidth(self.mic.p.get_sample_size(pyaudio.paInt16))
+        sound_file.setframerate(FS)
+        sound_file.writeframes(b''.join(self.mic.frames))
+        sound_file.close()
+
+    def save_photo(self):
+        # Read the wav file (mono)
+        samplingFrequency, signalData = wavfile.read(
+            'hello_UoA.wav')
+        # Plot the signal read from wav file
+        plt.subplot(211)
+        plt.title('Spectrogram')
+        plt.plot(signalData)
+        plt.xlabel('Sample')
+        plt.ylabel('Amplitude')
+        plt.subplot(212)
+        plt.specgram(signalData, Fs=samplingFrequency)
+        plt.xlabel('Time')
+        plt.ylabel('Frequency')
+        plt.show()
+
+    def update_counter(self):
+        global counter
+        if self.stop_pressed != True:
+            counter += 1
+            self.timer.clear()
+            self.progressBar.setValue(counter)
+            self.timer.setText(str(counter) + ' sec')
+
+        else:
+            return
+
+        self.main_menu.clicked.connect(self.goto_home)
 
     def goto_home(self):
         home = MainWindow()
