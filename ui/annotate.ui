@@ -17,18 +17,22 @@
    <widget class="QWidget" name="verticalLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>710</x>
       <y>40</y>
-      <width>641</width>
-      <height>661</height>
+      <width>681</width>
+      <height>651</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="va_plot"/>
+    <layout class="QVBoxLayout" name="va_plot">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+    </layout>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>40</y>
       <width>651</width>
       <height>391</height>
@@ -39,7 +43,7 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>90</x>
       <y>430</y>
       <width>511</width>
       <height>41</height>
@@ -47,75 +51,11 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout"/>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>760</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Volume:</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_2">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>760</y>
-      <width>171</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_3">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>760</y>
-      <width>291</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>760</y>
-      <width>91</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Current Speed:</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="home_button_annotator">
     <property name="geometry">
      <rect>
-      <x>730</x>
-      <y>730</y>
+      <x>710</x>
+      <y>750</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -127,8 +67,8 @@
    <widget class="QPushButton" name="save_CSV_button">
     <property name="geometry">
      <rect>
-      <x>970</x>
-      <y>730</y>
+      <x>950</x>
+      <y>750</y>
       <width>111</width>
       <height>51</height>
      </rect>
@@ -140,8 +80,8 @@
    <widget class="QPushButton" name="clear_button">
     <property name="geometry">
      <rect>
-      <x>850</x>
-      <y>730</y>
+      <x>830</x>
+      <y>750</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -153,8 +93,8 @@
    <widget class="QPushButton" name="pushButton_9">
     <property name="geometry">
      <rect>
-      <x>1100</x>
-      <y>730</y>
+      <x>1080</x>
+      <y>750</y>
       <width>111</width>
       <height>51</height>
      </rect>
@@ -204,7 +144,7 @@
    <widget class="QWidget" name="verticalLayoutWidget_4">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>480</y>
       <width>651</width>
       <height>251</height>
@@ -215,7 +155,7 @@
    <widget class="QLabel" name="lbl">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>430</y>
       <width>71</width>
       <height>31</height>
@@ -228,11 +168,30 @@
    <widget class="QLabel" name="elbl">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>610</x>
       <y>430</y>
       <width>71</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="out_of_bounds_lbl">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>710</y>
+      <width>641</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>18</pointsize>
+     </font>
     </property>
     <property name="text">
      <string/>

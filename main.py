@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtCore import QDir, Qt, QUrl, QPoint, QTime, QProcess
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
-from PyQt5.QtCore import QDir, Qt, QUrl
+from PyQt5.QtCore import QDir, Qt, QUrl, QTimer
 from PyQt5.QtGui import QIcon
 import numpy as np
 from spectogram import MicrophoneRecorder, SpectrogramWidget
@@ -250,6 +250,7 @@ class annotationScreen(QMainWindow):
         self.valence_points = []
         self.arousal_points = []
         self.time_points = []
+        self.count_out_of_bounds = 0
 
         self.setWindowTitle("Video Player")
 
@@ -327,6 +328,11 @@ class annotationScreen(QMainWindow):
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)
+
+        # to keep calling the positionChanged function in order to update the time and store it
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.positionChanged)
+        self.timer.start(10)
 
     def audioVis(self, filepath):
         # a figure instance to plot on
@@ -406,6 +412,10 @@ class annotationScreen(QMainWindow):
                 event.ydata, 2), color='red', s=5)
             self.canvas.draw()
             self.savePoints(round(event.xdata, 2), round(event.ydata, 2))
+        else:
+            self.count_out_of_bounds += 1
+            self.out_of_bounds_lbl.setText(
+                "You have clicked out of the annotation model {} times".format(self.count_out_of_bounds))
 
     def savePoints(self, xdata, ydata):
         self.valence_points.append(xdata)
@@ -414,15 +424,16 @@ class annotationScreen(QMainWindow):
 
     def saveAsCSV(self):
         header = ["Time", "Valence", "Arousal"]
-        with open('CSV_Outputs/annotation/example.csv', 'w+', newline='') as file:
+        with open('csv_outputs/annotation/example.csv', 'w+', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(header)
             rows = [(str(time), str(valence), str(arousal)) for time, valence, arousal in zip(self.time_points,
-                self.valence_points, self.arousal_points)]
+                                                                                              self.valence_points, self.arousal_points)]
             writer.writerows(rows)
 
     def clear_plot(self):
         self.createCircle()
+        self.out_of_bounds_lbl.clear()
 
     def openFile(self):
         fileName, _ = QFileDialog.getOpenFileName(
@@ -451,12 +462,21 @@ class annotationScreen(QMainWindow):
             self.playButton.setIcon(
                 self.style().standardIcon(QStyle.SP_MediaPlay))
 
-    def positionChanged(self, position):
+
+    def positionChanged(self):
+        position = self.mediaPlayer.position()
         self.positionSlider.setValue(position)
+
         mtime = QTime(0, 0, 0, 0)
-        mtime = mtime.addMSecs(self.mediaPlayer.position())
-        self.seconds = QTime(0, 0, 0, 0).secsTo(mtime)
-        self.lbl.setText(mtime.toString())
+        mtime = mtime.addMSecs(position)
+        formatted_time = mtime.toString("HH:mm:ss")
+        self.lbl.setText(formatted_time)
+
+        seconds = mtime.second()
+        milliseconds = mtime.msec()
+        time_in_seconds = seconds + (milliseconds/1000)
+        self.seconds = "{:.2f}".format(time_in_seconds) # this gives seconds upto two decimal places
+
 
     def durationChanged(self, duration):
         self.positionSlider.setRange(0, duration)

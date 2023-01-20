@@ -314,29 +314,10 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Plot</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_8">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>730</y>
-     <width>341</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Arial</family>
-     <pointsize>18</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Main Menu</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="clear_button">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>1060</x>
      <y>770</y>
      <width>111</width>
      <height>51</height>
@@ -355,7 +336,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QPushButton" name="pushButton_6">
    <property name="geometry">
     <rect>
-     <x>890</x>
+     <x>1190</x>
      <y>770</y>
      <width>141</width>
      <height>51</height>
@@ -388,6 +369,25 @@ fields next to 'Valence' and 'Arousal' and then click plot.
    </property>
    <property name="text">
     <string>Valence-Arousal Plot</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_8">
+   <property name="geometry">
+    <rect>
+     <x>750</x>
+     <y>770</y>
+     <width>291</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Main Menu</string>
    </property>
   </widget>
  </widget>

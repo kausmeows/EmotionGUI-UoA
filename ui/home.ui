@@ -148,6 +148,7 @@
  </widget>
  <resources>
   <include location="../uoa_logo.qrc"/>
+  <include location="../uoa_background.qrc"/>
  </resources>
  <connections/>
 </ui>
