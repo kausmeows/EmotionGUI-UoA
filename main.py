@@ -325,6 +325,9 @@ class annotationScreen(QMainWindow):
 
         self.save_CSV_button.clicked.connect(self.saveAsCSV)
 
+        # For re-annotation
+        self.reannotate_button.clicked.connect(self.reannotate)
+
         self.homeB = self.findChild(
             QtWidgets.QPushButton, 'home_button_annotator')
         self.homeB.clicked.connect(self.goto_home)
@@ -414,9 +417,24 @@ class annotationScreen(QMainWindow):
             self.savePoints(round(event.xdata, 2), round(event.ydata, 2))
         else:
             self.count_out_of_bounds += 1
+            self.time_points.append(self.seconds)
+            self.valence_points.append(None)
+            self.arousal_points.append(None)
             self.out_of_bounds_lbl.setText(
-                "You have clicked out of the annotation model {} times".format(self.count_out_of_bounds))
+                "You have clicked out of the annotation model {} times. Do you want to re-annotate?".format(self.count_out_of_bounds))
 
+    def reannotate(self):
+        # clear the plot and all the time and emotional coordinates list
+        self.clear_plot()
+        self.time_points = []
+        self.valence_points = []
+        self.arousal_points = []
+        self.count_out_of_bounds = 0
+        # pause the media and begin again
+        self.setPosition(0)
+        self.mediaPlayer.pause()
+        self.out_of_bounds_lbl.setText("You can now begin the annotation again")
+    
     def savePoints(self, xdata, ydata):
         self.valence_points.append(xdata)
         self.arousal_points.append(ydata)
@@ -424,7 +442,7 @@ class annotationScreen(QMainWindow):
 
     def saveAsCSV(self):
         header = ["Time", "Valence", "Arousal"]
-        with open('csv_outputs/annotation/example.csv', 'w+', newline='') as file:
+        with open('output_files/csv/annotation/example.csv', 'w+', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(header)
             rows = [(str(time), str(valence), str(arousal)) for time, valence, arousal in zip(self.time_points,
@@ -596,8 +614,7 @@ class liveAudioScreen(QMainWindow, QWidget):
         self.img.setImage(self.img_array, autoLevels=False)
 
     def save_audio(self):
-        sound_file = wave.open("hello_UoA.wav", "wb")
-        print("saving")
+        sound_file = wave.open("output_files/live_audio/example.wav", "wb")
         sound_file.setnchannels(1)
         sound_file.setsampwidth(self.mic.p.get_sample_size(pyaudio.paInt16))
         sound_file.setframerate(FS)
@@ -607,7 +624,7 @@ class liveAudioScreen(QMainWindow, QWidget):
     def save_photo(self):
         # Read the wav file (mono)
         samplingFrequency, signalData = wavfile.read(
-            'hello_UoA.wav')
+            'output_files/live_audio/example.wav')
         # Plot the signal read from wav file
         plt.subplot(211)
         plt.title('Spectrogram')
