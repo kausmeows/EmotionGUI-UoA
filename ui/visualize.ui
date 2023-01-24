@@ -132,7 +132,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>!</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_5">
+  <widget class="QPushButton" name="plot_predicted">
    <property name="geometry">
     <rect>
      <x>240</x>

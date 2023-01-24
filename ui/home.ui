@@ -20,10 +20,10 @@
    <widget class="QPushButton" name="visualise_button">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>390</x>
       <y>350</y>
-      <width>191</width>
-      <height>121</height>
+      <width>231</width>
+      <height>151</height>
      </rect>
     </property>
     <property name="font">
@@ -31,6 +31,15 @@
       <family>Arial</family>
       <pointsize>36</pointsize>
      </font>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton:hover {
+background-color: rgb(229, 244, 255);
+border-radius: 20px
+}</string>
     </property>
     <property name="text">
      <string>Visualize</string>
@@ -39,16 +48,16 @@
    <widget class="QLabel" name="label1">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>200</y>
-      <width>381</width>
-      <height>91</height>
+      <x>340</x>
+      <y>150</y>
+      <width>681</width>
+      <height>161</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>64</pointsize>
+      <pointsize>100</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -57,14 +66,17 @@
     <property name="text">
      <string>Emotion GUI</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QPushButton" name="annotate_button">
     <property name="geometry">
      <rect>
       <x>760</x>
       <y>350</y>
-      <width>191</width>
-      <height>121</height>
+      <width>221</width>
+      <height>151</height>
      </rect>
     </property>
     <property name="font">
@@ -72,6 +84,12 @@
       <family>Arial</family>
       <pointsize>36</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton:hover {
+background-color: rgb(229, 244, 255);
+border-radius: 20px
+}</string>
     </property>
     <property name="text">
      <string>Annotation</string>
@@ -80,10 +98,10 @@
    <widget class="QPushButton" name="liveAudio_button">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>520</y>
-      <width>201</width>
-      <height>121</height>
+      <x>570</x>
+      <y>540</y>
+      <width>241</width>
+      <height>151</height>
      </rect>
     </property>
     <property name="font">
@@ -91,6 +109,12 @@
       <family>Arial</family>
       <pointsize>36</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton:hover {
+background-color: rgb(229, 244, 255);
+border-radius: 20px
+}</string>
     </property>
     <property name="text">
      <string>Live Audio</string>
@@ -102,7 +126,7 @@
       <x>1200</x>
       <y>20</y>
       <width>221</width>
-      <height>201</height>
+      <height>211</height>
      </rect>
     </property>
     <property name="text">
@@ -148,7 +172,6 @@
  </widget>
  <resources>
   <include location="../uoa_logo.qrc"/>
-  <include location="../uoa_background.qrc"/>
  </resources>
  <connections/>
 </ui>
