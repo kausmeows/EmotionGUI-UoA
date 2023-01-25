@@ -333,7 +333,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Clear</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="saveCSV_visualize">
    <property name="geometry">
     <rect>
      <x>1190</x>

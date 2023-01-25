@@ -19,7 +19,7 @@ from multimedia import VideoWindow
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
-							 QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
+                             QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
 from PyQt5.QtWidgets import QMainWindow, QAction
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -73,6 +73,9 @@ class visualisationScreen(QWidget):
 	def __init__(self):
 		super(visualisationScreen, self).__init__()
 		loadUi('ui/visualize.ui', self)
+  
+		self.manual_valence_vec = []
+		self.manual_arousal_vec = []
 
 		# -------------------------------------------------------------
 		# to get the dialog box when the 'Select CSV' button is clicked and write the path of file on the text editor
@@ -109,6 +112,10 @@ class visualisationScreen(QWidget):
 			QtWidgets.QPushButton, 'plotButton_manual')
 		self.plotButton_manual.clicked.connect(self.plotVA_Manual)
 		# -------------------------------------------------------------
+  
+		self.saveCSV_visualize = self.findChild(
+			QtWidgets.QPushButton, 'saveCSV_visualize')
+		self.saveCSV_visualize.clicked.connect(self.saveCSV)
 
 		# -------------------------------------------------------------
 		# to clear the plot
@@ -166,17 +173,17 @@ class visualisationScreen(QWidget):
 
 		# V-A plot basic landmark emotions coordinates
 		self.landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
-								 'interested', 'happy', 'pleased', 'relaxed', 'content']
+                           'interested', 'happy', 'pleased', 'relaxed', 'content']
 		self.landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37,
-								0.2, 0.5, 0.35, 0.6, 0.5)
+                          0.2, 0.5, 0.35, 0.6, 0.5)
 		self.landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9,
-								0.7, 0.5, 0.35, -0.3, -0.45)
+                          0.7, 0.5, 0.35, -0.3, -0.45)
 
 		for point in range(len(self.landmarkEmotions)):
 			self.axes.scatter(self.landmarkValence,
-							  self.landmarkArousal, color='k', s=5)
+						self.landmarkArousal, color='k', s=5)
 			self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
-						   self.landmarkEmotions[point], fontsize='xx-small')
+                 		self.landmarkEmotions[point], fontsize='xx-small')
 
 		self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
 		self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -185,18 +192,17 @@ class visualisationScreen(QWidget):
 
 	def updateCircle(self):
 		self.RGB_values = [[255 / 255, 0 / 255, 0 / 255], [255 / 255, 255 / 255, 0 / 255],
-						   [0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
+						[0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
 		csv_address = self.textEdit.toPlainText()
 
 		if(csv_address != ''):
-			# Get the csv file address from the text edit
-			VA = []
-			with open(csv_address, 'r') as file:
-				csvreader = csv.reader(file)
-				header = next(csvreader)
-				for row in csvreader:
-					VA.append(row)
-			# print(VA)
+				# Get the csv file address from the text edit
+				VA = []
+				with open(csv_address, 'r') as file:
+					csvreader = csv.reader(file)
+					header = next(csvreader)
+					for row in csvreader:
+						VA.append(row)
 
 		self.last_time_sec = VA[len(VA)-1][0]
 		for VA_point in range(len(VA)):
@@ -210,21 +216,21 @@ class visualisationScreen(QWidget):
 
 	def plotPredictedEmotions(self):
 		self.RGB_values = [[255 / 255, 0 / 255, 0 / 255], [255 / 255, 255 / 255, 0 / 255],
-						[0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
+                    	[0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
 		wav_address = self.textEdit_2.toPlainText()
 		if(wav_address != ''):
-			# Get the wav file address from the text edit
-			findValues = BiLSTM(wav_address)
-			findValues.dataframes()
-			findValues.predict()
+				# Get the wav file address from the text edit
+				findValues = BiLSTM(wav_address)
+				findValues.dataframes()
+				findValues.predict()
 
-			# Get the csv file address from the text edit
-			VA = []
-			with open('output_files/csv/predicted/predicted_emotions.csv', 'r') as file:
-				csvreader = csv.reader(file)
-				header = next(csvreader)
-				for row in csvreader:
-					VA.append(row)
+				# Get the csv file address from the text edit
+				VA = []
+				with open('output_files/csv/predicted/predicted_emotions.csv', 'r') as file:
+					csvreader = csv.reader(file)
+					header = next(csvreader)
+					for row in csvreader:
+						VA.append(row)
 
 		self.last_time_sec = VA[len(VA)-1][0]
 		for VA_point in range(len(VA)):
@@ -235,21 +241,21 @@ class visualisationScreen(QWidget):
 				self.plotColorGradedPoints(valence, arousal, time)
 
 		self.canvas.draw()
-			
+
 	def plotColorGradedPoints(self, valence, arousal, time):
 		if(float(time) <= float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(arousal),
-							  color=self.RGB_values[0], s=5)
-			# self.RGB_values[0][0] = self.RGB_values[0][0] - 0.001
-			# self.RGB_values[0][1] = self.RGB_values[0][1] + 0.05
-			# self.RGB_values[0][2] = self.RGB_values[0][2] + 0.01
+                    color=self.RGB_values[0], s=5)
+		# self.RGB_values[0][0] = self.RGB_values[0][0] - 0.001
+		# self.RGB_values[0][1] = self.RGB_values[0][1] + 0.05
+		# self.RGB_values[0][2] = self.RGB_values[0][2] + 0.01
 
 		if(float(time) > float(self.last_time_sec) / 3 and float(time) <= 2 * float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(arousal),
-							  color=self.RGB_values[1], s=5)
-			# self.RGB_values[1][0] = self.RGB_values[1][0] - 0.02
-			# self.RGB_values[1][1] = self.RGB_values[1][1] - 0.02
-			# self.RGB_values[1][2] = self.RGB_values[1][2] + 0.05
+                    color=self.RGB_values[1], s=5)
+		# self.RGB_values[1][0] = self.RGB_values[1][0] - 0.02
+		# self.RGB_values[1][1] = self.RGB_values[1][1] - 0.02
+		# self.RGB_values[1][2] = self.RGB_values[1][2] + 0.05
 
 		elif(float(time) > 2 * float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(
@@ -263,13 +269,33 @@ class visualisationScreen(QWidget):
 		manual_arousal = self.arousal_field.toPlainText()
 
 		if(manual_valence != '' and manual_arousal != '' and float(manual_valence) >= -1 and float(manual_valence) <= 1
-				and float(manual_arousal) >= -1 and float(manual_arousal) <= 1):
+                        and float(manual_arousal) >= -1 and float(manual_arousal) <= 1):
 			self.axes.scatter(float(manual_valence), float(
 				manual_arousal), color='blue', s=5)
+			self.manual_valence_vec.append(float(manual_valence))
+			self.manual_arousal_vec.append(float(manual_arousal))
 		self.canvas.draw()
+  
+	def saveCSV(self):
+		header = ["Valence", "Arousal"]
+
+		# this opens a dialog box to save the file
+		filename = 'visualized-file'
+		filename, _ = QFileDialog.getSaveFileName(
+			self, "Save CSV file", filename, "CSV Files (*.csv)"
+		)
+		if filename:
+			with open(filename, 'w+', newline='') as file:
+				writer = csv.writer(file)
+				writer.writerow(header)
+				rows = [(str(valence), str(arousal)) for valence, arousal in zip(self.manual_valence_vec, self.manual_arousal_vec)]
+				writer.writerows(rows)
+
 
 	def clear_plot(self):
 		self.createCircle()
+		self.manual_arousal_vec.clear()
+		self.manual_valence_vec.clear()
 
 	def goto_home(self):
 		home = MainWindow()
@@ -427,17 +453,17 @@ class annotationScreen(QMainWindow):
 
 		# V-A plot basic landmark emotions coordinates
 		self.landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
-								 'interested', 'happy', 'pleased', 'relaxed', 'content']
+                           'interested', 'happy', 'pleased', 'relaxed', 'content']
 		self.landmarkValence = (-0.7, -0.65, -0.8, -0.1, 0.37,
-								0.2, 0.5, 0.35, 0.6, 0.5)
+                          0.2, 0.5, 0.35, 0.6, 0.5)
 		self.landmarkArousal = (0.65, 0.5, -0.15, -0.45, 0.9,
-								0.7, 0.5, 0.35, -0.3, -0.45)
+                          0.7, 0.5, 0.35, -0.3, -0.45)
 
 		for point in range(len(self.landmarkEmotions)):
 			self.axes.scatter(self.landmarkValence,
-							  self.landmarkArousal, color='k', s=5)
+						self.landmarkArousal, color='k', s=5)
 			self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
-						   self.landmarkEmotions[point], fontsize='xx-small')
+					self.landmarkEmotions[point], fontsize='xx-small')
 
 		self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
 		self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -470,7 +496,7 @@ class annotationScreen(QMainWindow):
 		self.setPosition(0)
 		self.mediaPlayer.pause()
 		self.out_of_bounds_lbl.setText("You can now begin the annotation again")
-	
+
 	def savePoints(self, xdata, ydata):
 		self.valence_points.append(xdata)
 		self.arousal_points.append(ydata)
@@ -478,16 +504,25 @@ class annotationScreen(QMainWindow):
 
 	def saveAsCSV(self):
 		header = ["Time", "Valence", "Arousal"]
-		with open('output_files/csv/annotation/example.csv', 'w+', newline='') as file:
-			writer = csv.writer(file)
-			writer.writerow(header)
-			rows = [(str(time), str(valence), str(arousal)) for time, valence, arousal in zip(self.time_points,
-																							  self.valence_points, self.arousal_points)]
-			writer.writerows(rows)
+
+		# this opens a dialog box to save the file
+		filename = 'annotated-file'
+		filename, _ = QFileDialog.getSaveFileName(
+			self, "Save CSV file", filename, "CSV Files (*.csv)"
+		)
+		if filename:
+			with open(filename, 'w+', newline='') as file:
+				writer = csv.writer(file)
+				writer.writerow(header)
+				rows = [(str(time), str(valence), str(arousal)) for time, valence, arousal in zip(self.time_points,
+                                                                                      self.valence_points, self.arousal_points)]
+				writer.writerows(rows)
 
 	def clear_plot(self):
 		self.createCircle()
 		self.out_of_bounds_lbl.clear()
+		self.valence_points.clear()
+		self.arousal_points.clear()
 
 	def openFile(self):
 		fileName, _ = QFileDialog.getOpenFileName(
@@ -516,7 +551,6 @@ class annotationScreen(QMainWindow):
 			self.playButton.setIcon(
 				self.style().standardIcon(QStyle.SP_MediaPlay))
 
-
 	def positionChanged(self):
 		position = self.mediaPlayer.position()
 		self.positionSlider.setValue(position)
@@ -529,8 +563,8 @@ class annotationScreen(QMainWindow):
 		seconds = mtime.second()
 		milliseconds = mtime.msec()
 		time_in_seconds = seconds + (milliseconds/1000)
-		self.seconds = "{:.2f}".format(time_in_seconds) # this gives seconds upto two decimal places
-
+		# this gives seconds upto two decimal places
+		self.seconds = "{:.2f}".format(time_in_seconds)
 
 	def durationChanged(self, duration):
 		self.positionSlider.setRange(0, duration)
@@ -597,7 +631,7 @@ class liveAudioScreen(QMainWindow, QWidget):
 		# bipolar colormap
 		pos = np.array([0., 1., 0.5, 0.25, 0.75])
 		color = np.array([[0, 255, 255, 255], [255, 255, 0, 255], [
-						 0, 0, 0, 255], (0, 0, 255, 255), (255, 0, 0, 255)], dtype=np.ubyte)
+                    0, 0, 0, 255], (0, 0, 255, 255), (255, 0, 0, 255)], dtype=np.ubyte)
 		cmap = pg.ColorMap(pos, color)
 		lut = cmap.getLookupTable(0.0, 1.0, 256)
 
@@ -650,28 +684,36 @@ class liveAudioScreen(QMainWindow, QWidget):
 		self.img.setImage(self.img_array, autoLevels=False)
 
 	def save_audio(self):
-		sound_file = wave.open("output_files/live_audio/example.wav", "wb")
-		sound_file.setnchannels(1)
-		sound_file.setsampwidth(self.mic.p.get_sample_size(pyaudio.paInt16))
-		sound_file.setframerate(FS)
-		sound_file.writeframes(b''.join(self.mic.frames))
-		sound_file.close()
+		# opens a dialog box for saving the file
+		self.filename = 'live-audio'
+		self.filename, _ = QFileDialog.getSaveFileName(
+			self, "Save audio file", self.filename, "WAV Files (*.wav)"
+		)
+		if self.filename:
+			sound_file = wave.open(self.filename, "wb")
+			sound_file.setnchannels(1)
+			sound_file.setsampwidth(self.mic.p.get_sample_size(pyaudio.paInt16))
+			sound_file.setframerate(FS)
+			sound_file.writeframes(b''.join(self.mic.frames))
+			sound_file.close()
 
-	def save_photo(self):
+	def save_photo(self, audiopath):
 		# Read the wav file (mono)
-		samplingFrequency, signalData = wavfile.read(
-			'output_files/live_audio/example.wav')
-		# Plot the signal read from wav file
-		plt.subplot(211)
-		plt.title('Spectrogram')
-		plt.plot(signalData)
-		plt.xlabel('Sample')
-		plt.ylabel('Amplitude')
-		plt.subplot(212)
-		plt.specgram(signalData, Fs=samplingFrequency)
-		plt.xlabel('Time')
-		plt.ylabel('Frequency')
-		plt.show()
+		audiopath = self.filename
+		if audiopath:
+			samplingFrequency, signalData = wavfile.read(
+						audiopath)
+			# Plot the signal read from wav file
+			plt.subplot(211)
+			plt.title('Spectrogram')
+			plt.plot(signalData)
+			plt.xlabel('Sample')
+			plt.ylabel('Amplitude')
+			plt.subplot(212)
+			plt.specgram(signalData, Fs=samplingFrequency)
+			plt.xlabel('Time')
+			plt.ylabel('Frequency')
+			plt.show()
 
 	def update_counter(self):
 		global counter
