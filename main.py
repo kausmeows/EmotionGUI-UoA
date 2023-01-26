@@ -168,8 +168,11 @@ class visualisationScreen(QWidget):
 		self.axes.hlines(y=0, xmin=-1, xmax=1, linewidth=0.7, color='k')
 		self.axes.vlines(x=0, ymin=-1, ymax=1, linewidth=0.7, color='k')
 
-		self.axes.tick_params(axis='both', which='major', labelsize=5)
-		self.axes.tick_params(axis='both', which='minor', labelsize=5)
+		self.axes.tick_params(axis='both', which='major', labelsize=10)
+		self.axes.tick_params(axis='both', which='minor', labelsize=10)
+  
+		plt.xlabel("Valence")
+		plt.ylabel("Arousal")
 
 		# V-A plot basic landmark emotions coordinates
 		self.landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
@@ -181,9 +184,9 @@ class visualisationScreen(QWidget):
 
 		for point in range(len(self.landmarkEmotions)):
 			self.axes.scatter(self.landmarkValence,
-						self.landmarkArousal, color='k', s=5)
+						self.landmarkArousal, color='k', s=15)
 			self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
-                 		self.landmarkEmotions[point], fontsize='xx-small')
+                 		self.landmarkEmotions[point], fontsize='large')
 
 		self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
 		self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -231,7 +234,7 @@ class visualisationScreen(QWidget):
 					header = next(csvreader)
 					for row in csvreader:
 						VA.append(row)
-
+      
 		self.last_time_sec = VA[len(VA)-1][0]
 		for VA_point in range(len(VA)):
 			time = VA[VA_point][0]
@@ -245,21 +248,21 @@ class visualisationScreen(QWidget):
 	def plotColorGradedPoints(self, valence, arousal, time):
 		if(float(time) <= float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(arousal),
-                    color=self.RGB_values[0], s=5)
+                    color=self.RGB_values[0], s=15)
 		# self.RGB_values[0][0] = self.RGB_values[0][0] - 0.001
 		# self.RGB_values[0][1] = self.RGB_values[0][1] + 0.05
 		# self.RGB_values[0][2] = self.RGB_values[0][2] + 0.01
 
 		if(float(time) > float(self.last_time_sec) / 3 and float(time) <= 2 * float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(arousal),
-                    color=self.RGB_values[1], s=5)
+                    color=self.RGB_values[1], s=15)
 		# self.RGB_values[1][0] = self.RGB_values[1][0] - 0.02
 		# self.RGB_values[1][1] = self.RGB_values[1][1] - 0.02
 		# self.RGB_values[1][2] = self.RGB_values[1][2] + 0.05
 
 		elif(float(time) > 2 * float(self.last_time_sec) / 3):
 			self.axes.scatter(float(valence), float(
-				arousal), color=self.RGB_values[2], s=5)
+				arousal), color=self.RGB_values[2], s=15)
 			# self.RGB_values[2][0] = self.RGB_values[2][0] + 0.05
 			# self.RGB_values[2][1] = self.RGB_values[2][1] + 0.05
 			# self.RGB_values[2][2] = self.RGB_values[2][2] - 0.02
@@ -271,7 +274,7 @@ class visualisationScreen(QWidget):
 		if(manual_valence != '' and manual_arousal != '' and float(manual_valence) >= -1 and float(manual_valence) <= 1
                         and float(manual_arousal) >= -1 and float(manual_arousal) <= 1):
 			self.axes.scatter(float(manual_valence), float(
-				manual_arousal), color='blue', s=5)
+				manual_arousal), color='blue', s=15)
 			self.manual_valence_vec.append(float(manual_valence))
 			self.manual_arousal_vec.append(float(manual_arousal))
 		self.canvas.draw()
@@ -393,6 +396,9 @@ class annotationScreen(QMainWindow):
 		self.homeB = self.findChild(
 			QtWidgets.QPushButton, 'home_button_annotator')
 		self.homeB.clicked.connect(self.goto_home)
+  
+		# self.volume_label.setText(str(self.mediaPlayer.volume()))
+		# self.volume_label.setText(str(self.mediaPlayer.setVolume(1)))
 
 		# to keep calling the positionChanged function in order to update the time and store it
 		self.timer = QTimer(self)
@@ -414,11 +420,11 @@ class annotationScreen(QMainWindow):
 
 		samplingFrequency, signalData = wavfile.read(filepath)
 		# Plot the signal read from wav file
-		plt.title('Spectrogram', fontsize=3)
+		plt.title('Spectrogram', fontsize=9)
 		# plt.rcParams["figure.figsize"] = [10, 10]
-		plt.subplots_adjust(left=0.100, right=0.900, top=0.860, bottom=0.140)
-		axes.tick_params(axis='both', which='major', labelsize=3)
-		axes.tick_params(axis='both', which='minor', labelsize=1)
+		plt.subplots_adjust(left=0.100, right=0.950, top=0.860, bottom=0.198)
+		axes.tick_params(axis='both', which='major', labelsize=8)
+		axes.tick_params(axis='both', which='minor', labelsize=8)
 		plt.specgram(signalData, Fs=samplingFrequency)
 		plt.xlabel('Time')
 		plt.ylabel
@@ -448,8 +454,8 @@ class annotationScreen(QMainWindow):
 		self.axes.hlines(y=0, xmin=-1, xmax=1, linewidth=0.7, color='k')
 		self.axes.vlines(x=0, ymin=-1, ymax=1, linewidth=0.7, color='k')
 
-		self.axes.tick_params(axis='both', which='major', labelsize=5)
-		self.axes.tick_params(axis='both', which='minor', labelsize=5)
+		self.axes.tick_params(axis='both', which='major', labelsize=10)
+		self.axes.tick_params(axis='both', which='minor', labelsize=10)
 
 		# V-A plot basic landmark emotions coordinates
 		self.landmarkEmotions = ['angry', 'afraid', 'sad', 'bored', 'excited',
@@ -461,9 +467,9 @@ class annotationScreen(QMainWindow):
 
 		for point in range(len(self.landmarkEmotions)):
 			self.axes.scatter(self.landmarkValence,
-						self.landmarkArousal, color='k', s=5)
+						self.landmarkArousal, color='k', s=15)
 			self.axes.text(self.landmarkValence[point] + 0.02, self.landmarkArousal[point] + 0.02,
-					self.landmarkEmotions[point], fontsize='xx-small')
+					self.landmarkEmotions[point], fontsize='large')
 
 		self.axes.yaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
 		self.axes.xaxis.grid(color='gray', linestyle='dashed', linewidth=0.3)
@@ -474,7 +480,7 @@ class annotationScreen(QMainWindow):
 		print(round(event.xdata, 2), round(event.ydata, 2))
 		if(event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
 			self.axes.scatter(round(event.xdata, 2), round(
-				event.ydata, 2), color='red', s=5)
+				event.ydata, 2), color='red', s=15)
 			self.canvas.draw()
 			self.savePoints(round(event.xdata, 2), round(event.ydata, 2))
 		else:
@@ -574,6 +580,12 @@ class annotationScreen(QMainWindow):
 
 	def setPosition(self, position):
 		self.mediaPlayer.setPosition(position)
+  
+	# def volume(self):
+	# 	return self.mediaPlayer.volume()
+
+	# def setVolume(self, value):
+	# 	self.mediaPlayer.setVolume(volume=value)
 
 	def handleError(self):
 		self.playButton.setEnabled(False)

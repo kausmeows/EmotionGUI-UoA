@@ -134,7 +134,7 @@
       <x>20</x>
       <y>500</y>
       <width>651</width>
-      <height>281</height>
+      <height>291</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="audio_visualizer"/>
