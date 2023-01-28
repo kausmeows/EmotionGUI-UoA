@@ -35,7 +35,7 @@
       <x>20</x>
       <y>40</y>
       <width>651</width>
-      <height>411</height>
+      <height>551</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="multimedia"/>
@@ -44,9 +44,9 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>450</y>
+      <y>590</y>
       <width>511</width>
-      <height>41</height>
+      <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout"/>
@@ -128,24 +128,13 @@
      <string>MP4 Multimedia</string>
     </property>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_4">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>500</y>
-      <width>651</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="audio_visualizer"/>
-   </widget>
    <widget class="QLabel" name="lbl">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>450</y>
+      <y>590</y>
       <width>71</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -156,9 +145,9 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>450</y>
+      <y>590</y>
       <width>71</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -195,6 +184,77 @@
     </property>
     <property name="text">
      <string>Re-annotate</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="playfromStart">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>670</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Play from Start</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="inc_vol">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>670</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Increase Volume</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="dec_vol">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>670</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Decrease Volume</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="playback_slider">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>740</y>
+      <width>531</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>730</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Playback Speed:</string>
     </property>
    </widget>
   </widget>

@@ -97,7 +97,7 @@ class BiLSTM():
 		self.tagDf = self.silenceStampExtract(self.model_path, self.currentDf.shape[0])
 		self.currentDf = self.currentDf.join(self.tagDf)
 
-	# ## Machine Learning
+	# Machine Learning
 
 	# prepare data for lstms
 	def series_to_supervised(self, data, n_in=1, n_out=1, dropnan=True):
@@ -187,68 +187,21 @@ class BiLSTM():
 
 		csvOutput = np.column_stack((time_array, v_pred_test_list, a_pred_test_list))
 
-		csvFilename = '/Users/kaustubh/Desktop/EmotionGUI-UoA/output_files/csv/predicted/predicted_emotions.csv'
+		# csvFilename = '/Users/kaustubh/Desktop/EmotionGUI-UoA/output_files/csv/predicted/predicted_emotions.csv'
 
-		# newPath = os.path.join(
-		# 	os.getcwd(), r"output_files/csv/predicted")
-		# os.chdir(newPath)
+		# # newPath = os.path.join(
+		# # 	os.getcwd(), r"output_files/csv/predicted")
+		# # os.chdir(newPath)
 
-		with open(csvFilename, 'w', newline='', encoding='utf-8') as file:
-			writer = csv.writer(file)
-			writer.writerow(["Time", "Valence", "Arousal"])
+		# with open(csvFilename, 'w', newline='', encoding='utf-8') as file:
+		# 	writer = csv.writer(file)
+		# 	writer.writerow(["Time", "Valence", "Arousal"])
 
-			for coordinate in csvOutput.round(decimals=2):
-				writer.writerow(coordinate)
+		# 	for coordinate in csvOutput.round(decimals=2):
+		# 		writer.writerow(coordinate)
 
 
 # findValues = BiLSTM(
 # 	'/Users/kaustubh/Desktop/EmotionGUI-UoA/testing/WAV_Files/JLCO_male2_confident_13a_1.wav')
 # findValues.dataframes()
 # findValues.predict()
-
-
-	# ## Result Plots
-	#
-	#
-
-	# In[ ]:
-
-
-	# avResults = pd.DataFrame({'Arousal': a_pred_test_list, 'Valence': v_pred_test_list})[0:-1]
-	# avResults.loc[1:, ['Arousal', 'Valence']].plot(figsize=(15, 5), title='Arousal and Valence', fontsize=16)
-	# plt.show()
-
-
-	# In[ ]:
-
-
-	# fig = plt.figure(figsize=[7, 7])
-	# ax = fig.add_subplot(1, 1, 1)
-	# ax.set_aspect('equal')
-
-	# Move left y-axis and bottim x-axis to centre, passing through (0,0)
-	# ax.spines['left'].set_position('center')
-	# ax.spines['bottom'].set_position('center')
-
-	# Eliminate upper and right axes
-	# ax.spines['right'].set_color('none')
-	# ax.spines['top'].set_color('none')
-
-	# Show ticks in the left and lower axes only
-	# ax.xaxis.set_ticks_position('bottom')
-	# ax.yaxis.set_ticks_position('left')
-
-	# fig.suptitle('VA Scatter', fontsize=16)
-	# plt.xlim([-0.5, 0.5])
-	# plt.ylim([-0.5, 0.5])
-	# Because we moved the label position so the x,y should be on other way round
-	# ax.yaxis.set_label_position('right')
-	# ax.xaxis.set_label_position('top')
-	# plt.xlabel('Arousal')
-	# plt.ylabel('Valance')
-	# ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-	# unitCircle = plt.Circle((0, 0), 0.5, color='r', fill=False)
-	# ax.add_patch(unitCircle)
-
-	# plt.scatter(v_pred_test_list, a_pred_test_list, s=2)
-	# plt.show() #
