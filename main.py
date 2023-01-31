@@ -1,3 +1,4 @@
+import random
 import sys
 import csv
 import wave
@@ -531,8 +532,8 @@ class annotationScreen(QMainWindow):
 		# draw the circle
 		self.createCircle()
 
-		# self.figure.canvas.mpl_connect(
-		# 	'button_press_event', self.annotateOnClick)
+		self.figure.canvas.mpl_connect(
+			'button_press_event', self.annotateOnClick)
 
 		# set the layout
 		va_layout = self.va_plot
@@ -574,7 +575,7 @@ class annotationScreen(QMainWindow):
 		# to keep calling the autoClick function in order to keep clicking in regular intervals
 		self.timerClick = QTimer(self)
 		self.timerClick.timeout.connect(self.autoClicking)
-		self.timerClick.start(10)
+		self.timerClick.start(20)
 
 	def audioVis(self, filepath):
 		# a figure instance to plot on
@@ -653,7 +654,7 @@ class annotationScreen(QMainWindow):
 		self.canvas.draw()
 
 	def annotateOnClick(self, event):
-		if self.playButton.isEnabled():
+		if event is not None and self.playButton.isEnabled():
 			self.clicked = True
 			print(round(event.xdata, 2), round(event.ydata, 2))
 			if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
@@ -700,6 +701,12 @@ class annotationScreen(QMainWindow):
 		filename, _ = QFileDialog.getSaveFileName(
 			self, "Save CSV file", filename, "CSV Files (*.csv)"
 		)
+  
+		for i in range(len(self.time_points)):
+			if i != 0:
+					if self.time_points[i] == self.time_points[i-1] or float(self.time_points[i]) < float(self.time_points[i-1]):
+						self.time_points[i] = round(float(self.time_points[i-1]) + random.uniform(0.02, 0.07), 2)
+
 		if filename:
 			with open(filename, 'w+', newline='') as file:
 				writer = csv.writer(file)
@@ -747,7 +754,7 @@ class annotationScreen(QMainWindow):
 				self.style().standardIcon(QStyle.SP_MediaPlay))
 
 	def autoClicking(self, event):
-		if self.playButton.isEnabled() and self.clicked == True:
+		if (event is not None and self.playButton.isEnabled() and self.clicked == True):
 			if (event.xdata != None and event.ydata != None):
 				print(round(event.xdata, 2), round(event.ydata, 2))
 				if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
