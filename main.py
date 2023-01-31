@@ -466,6 +466,7 @@ class annotationScreen(QMainWindow):
 		self.arousal_points = []
 		self.time_points = []
 		self.count_out_of_bounds = 0
+		self.clicked = False
 
 		self.setWindowTitle("Video Player")
 
@@ -531,10 +532,7 @@ class annotationScreen(QMainWindow):
 
 		# draw the circle
 		self.createCircle()
-
-		self.figure.canvas.mpl_connect(
-			'button_press_event', self.annotateOnClick)
-
+  
 		# set the layout
 		va_layout = self.va_plot
 		va_layout.addWidget(self.toolbar)
@@ -574,7 +572,7 @@ class annotationScreen(QMainWindow):
 
 		# to keep calling the autoClick function in order to keep clicking in regular intervals
 		self.timerClick = QTimer(self)
-		self.timerClick.timeout.connect(self.autoClicking)
+		self.timerClick.timeout.connect(lambda: self.autoClicking(None))
 		self.timerClick.start(20)
 
 	def audioVis(self, filepath):
@@ -654,10 +652,10 @@ class annotationScreen(QMainWindow):
 		self.canvas.draw()
 
 	def annotateOnClick(self, event):
-		if event is not None and self.playButton.isEnabled():
+		if self.playButton.isEnabled():
 			self.clicked = True
 			print(round(event.xdata, 2), round(event.ydata, 2))
-			if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
+			if event is not None and (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
 				self.axes.scatter(round(event.xdata, 2), round(
 					event.ydata, 2), color='red', s=15)
 				self.canvas.draw()
@@ -754,8 +752,8 @@ class annotationScreen(QMainWindow):
 				self.style().standardIcon(QStyle.SP_MediaPlay))
 
 	def autoClicking(self, event):
-		if (event is not None and self.playButton.isEnabled() and self.clicked == True):
-			if (event.xdata != None and event.ydata != None):
+		if self.playButton.isEnabled() and self.clicked == True:
+			if event is not None and (event.xdata != None and event.ydata != None):
 				print(round(event.xdata, 2), round(event.ydata, 2))
 				if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
 					self.axes.scatter(round(event.xdata, 2), round(
