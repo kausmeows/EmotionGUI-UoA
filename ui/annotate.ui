@@ -191,7 +191,7 @@
      <rect>
       <x>20</x>
       <y>670</y>
-      <width>131</width>
+      <width>121</width>
       <height>51</height>
      </rect>
     </property>
@@ -202,7 +202,7 @@
    <widget class="QPushButton" name="inc_vol">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>400</x>
       <y>670</y>
       <width>131</width>
       <height>51</height>
@@ -255,6 +255,32 @@
     </property>
     <property name="text">
      <string>Playback Speed:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="backward">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>670</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Backward</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="forward">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>670</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Forward</string>
     </property>
    </widget>
   </widget>

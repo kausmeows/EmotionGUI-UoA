@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import librosa as lbr
 from PyQt5 import QtWidgets, QtCore, uic
 from pydub import AudioSegment, silence
-from PyQt5.QtCore import QDir, Qt, QUrl, QPoint, QTime, QProcess
+from PyQt5.QtCore import QDir, Qt, QUrl, QTime
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
-from PyQt5.QtGui import QPixmap, QLinearGradient, QColor, QPalette, QBrush
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QDir, Qt, QUrl, QTimer
 from PyQt5.QtGui import QIcon
 import numpy as np
@@ -21,14 +21,13 @@ import pandas as pd
 
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel,
 							 QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
 from PyQt5.QtWidgets import QMainWindow, QAction
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import pyqtgraph as pg
 from utils import audio_processing as AP
-from models.scripts.bi_lstm import BiLSTM
 import keras
 from sklearn.preprocessing import MinMaxScaler
 from IPython.display import Audio
@@ -548,6 +547,10 @@ class annotationScreen(QMainWindow):
 
 		# Play media from start
 		self.playfromStart.clicked.connect(self.playFromStart)
+  
+		# Forward and Backward buttons
+		self.forward.clicked.connect(self.forward3Sec)
+		self.backward.clicked.connect(self.backward3Sec)
 
 		# Volume buttons
 		self.inc_vol.clicked.connect(self.increaseVolume)
@@ -804,6 +807,12 @@ class annotationScreen(QMainWindow):
 		if self.current_vol < 0:
 			self.current_vol = 0
 		self.mediaPlayer.setVolume(self.current_vol)
+  
+	def forward3Sec(self):
+		self.mediaPlayer.setPosition(self.mediaPlayer.position() + 3000)
+  
+	def backward3Sec(self):
+		self.mediaPlayer.setPosition(self.mediaPlayer.position() - 3000)
 
 	def changePlaybackSpeed(self):
 		# Get the current value of the slider
