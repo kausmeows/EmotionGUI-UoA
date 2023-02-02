@@ -3,7 +3,6 @@ import sys
 import csv
 import wave
 from PyQt5.uic import loadUi
-import matplotlib
 import pyaudio
 import matplotlib.pyplot as plt
 import librosa as lbr
@@ -513,9 +512,11 @@ class annotationScreen(QMainWindow):
 		exitAction.triggered.connect(self.exitCall)
 
 		controlLayout = self.horizontalLayout
-		controlLayout.addWidget(openBtn)
 		controlLayout.addWidget(self.playButton)
 		controlLayout.addWidget(self.positionSlider)
+  
+		open_btn_layout = self.open_multimedia_btn
+		open_btn_layout.addWidget(openBtn)
 
 		layout = self.multimedia
 		layout.addWidget(videoWidget)
