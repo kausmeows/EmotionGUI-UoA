@@ -3,6 +3,7 @@ import sys
 import csv
 import wave
 from PyQt5.uic import loadUi
+import matplotlib
 import pyaudio
 import matplotlib.pyplot as plt
 import librosa as lbr
@@ -200,8 +201,7 @@ class visualisationScreen(QWidget):
 		self.canvas.draw()
 
 	def updateCircle(self):
-		self.RGB_values = [[255 / 255, 0 / 255, 0 / 255], [255 / 255, 255 / 255, 0 / 255],
-						   [0 / 255, 0 / 255, 255 / 255]]  # start with red, yellow and blue
+		self.RGB_values = [[1, 0, 0, 1], [1, 1, 0, 1], [0, 0, 1, 1]]  # start with red, yellow and blue
 		csv_address = self.textEdit.toPlainText()
 
 		if (csv_address != ''):
@@ -212,7 +212,10 @@ class visualisationScreen(QWidget):
 				header = next(csvreader)
 				for row in csvreader:
 					VA.append(row)
-
+	
+		self.axes.text(float(VA[0][1]) + 0.02, float(VA[0][2]) + 0.02, 'start', color='red', size='large')
+		self.axes.text(float(VA[len(VA)-1][1]) + 0.02, float(VA[len(VA)-1][2]), 'end', color='blue', size='large')
+  
 		self.last_time_sec = VA[len(VA)-1][0]
 		for VA_point in range(len(VA)):
 			time = VA[VA_point][0]
@@ -393,28 +396,36 @@ class visualisationScreen(QWidget):
 			if (float(valence) >= -1 and float(valence) <= 1 and float(arousal) >= -1 and float(arousal) <= 1):
 				self.plotColorGradedPoints(valence, arousal, time)	
 		self.canvas.draw()
-
+  
 	def plotColorGradedPoints(self, valence, arousal, time):
+		alpha = 1
 		if (float(time) <= float(self.last_time_sec) / 3):
+			alpha = 1 - float(time) / (float(self.last_time_sec) / 3)
+			if alpha < 0:
+					alpha = 0
+			elif alpha > 1:
+				alpha = 1
 			self.axes.scatter(float(valence), float(arousal),
-							  color=self.RGB_values[0], s=15)
-		# self.RGB_values[0][0] = self.RGB_values[0][0] - 0.001
-		# self.RGB_values[0][1] = self.RGB_values[0][1] + 0.05
-		# self.RGB_values[0][2] = self.RGB_values[0][2] + 0.01
-
+							  color=self.RGB_values[0], s=18, alpha=alpha)
+		
 		if (float(time) > float(self.last_time_sec) / 3 and float(time) <= 2 * float(self.last_time_sec) / 3):
+			alpha = 1 - (float(time) - float(self.last_time_sec) / 3) / (float(self.last_time_sec) / 3)
+			if alpha < 0:
+					alpha = 0
+			elif alpha > 1:
+				alpha = 1
 			self.axes.scatter(float(valence), float(arousal),
-							  color=self.RGB_values[1], s=15)
-		# self.RGB_values[1][0] = self.RGB_values[1][0] - 0.02
-		# self.RGB_values[1][1] = self.RGB_values[1][1] - 0.02
-		# self.RGB_values[1][2] = self.RGB_values[1][2] + 0.05
-
+							  color=self.RGB_values[1], s=18, alpha=alpha)
+		
 		elif (float(time) > 2 * float(self.last_time_sec) / 3):
+			alpha = 1 - (float(time) - 2 * float(self.last_time_sec) / 3) / (float(self.last_time_sec) / 3)
+			if alpha < 0:
+					alpha = 0
+			elif alpha > 1:
+				alpha = 1
 			self.axes.scatter(float(valence), float(
-				arousal), color=self.RGB_values[2], s=15)
-			# self.RGB_values[2][0] = self.RGB_values[2][0] + 0.05
-			# self.RGB_values[2][1] = self.RGB_values[2][1] + 0.05
-			# self.RGB_values[2][2] = self.RGB_values[2][2] - 0.02
+				arousal), color=self.RGB_values[2], s=18, alpha=alpha)
+		self.canvas.draw()
 
 	def saveCSVPredicted(self):
 		header = ["Time", "Valence", "Arousal"]
@@ -759,8 +770,33 @@ class annotationScreen(QMainWindow):
 			if event is not None and (event.xdata != None and event.ydata != None):
 				print(round(event.xdata, 2), round(event.ydata, 2))
 				if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
+					time_elapsed = self.seconds
+					if float(time_elapsed) <= float(self.mediaSeconds) / 3:
+						color = 'red'
+						opacity = 1 - (float(time_elapsed) / (float(self.mediaSeconds) / 3))
+						if opacity < 0:
+							opacity = 0.3
+						elif opacity > 1:
+							opacity = 1
+					elif float(time_elapsed) > float(self.mediaSeconds) / 3 and float(time_elapsed) <= 2 * float(self.mediaSeconds) / 3:
+						color = 'yellow'
+						opacity = 1 - ((float(time_elapsed) - (float(self.mediaSeconds) / 3)) / 3)
+						print('yellow', opacity)
+						if opacity < 0:
+							opacity = 0.3
+						elif opacity > 1:
+							opacity = 1
+					elif float(time_elapsed) > 2 * float(self.mediaSeconds) / 3:
+						color = 'blue'
+						opacity = 1 - ((float(time_elapsed) - 2 * (float(self.mediaSeconds) / 3)) / 3)
+						print('blue', opacity)
+						if opacity < 0:
+							opacity = 0.3
+						elif opacity > 1:
+							opacity = 1
+
 					self.axes.scatter(round(event.xdata, 2), round(
-						event.ydata, 2), color='red', s=15)
+						event.ydata, 2), color=color, s=18, alpha=opacity)
 					self.canvas.draw()
 					self.savePoints(round(event.xdata, 2),
 									round(event.ydata, 2))
@@ -771,6 +807,7 @@ class annotationScreen(QMainWindow):
 					self.arousal_points.append(None)
 					self.out_of_bounds_lbl.setText(
 						"You have clicked out of the annotation model {} times. Do you want to re-annotate?".format(self.count_out_of_bounds))
+
 
 	def positionChanged(self):
 		position = self.mediaPlayer.position()
@@ -791,6 +828,7 @@ class annotationScreen(QMainWindow):
 		self.positionSlider.setRange(0, duration)
 		mtime = QTime(0, 0, 0, 0)
 		mtime = mtime.addMSecs(self.mediaPlayer.duration())
+		self.mediaSeconds = mtime.second()
 		self.elbl.setText(mtime.toString())
 
 	def setPosition(self, position):
