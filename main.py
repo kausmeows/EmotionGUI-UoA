@@ -773,6 +773,7 @@ class annotationScreen(QMainWindow):
 				if (event.xdata >= -1 and event.xdata <= 1 and event.ydata >= -1 and event.ydata <= 1):
 					time_elapsed = self.seconds
 					if float(time_elapsed) <= float(self.mediaSeconds) / 3:
+						print(self.mediaSeconds)
 						color = 'red'
 						opacity = 1 - (float(time_elapsed) / (float(self.mediaSeconds) / 3))
 						if opacity < 0:
@@ -829,7 +830,7 @@ class annotationScreen(QMainWindow):
 		self.positionSlider.setRange(0, duration)
 		mtime = QTime(0, 0, 0, 0)
 		mtime = mtime.addMSecs(self.mediaPlayer.duration())
-		self.mediaSeconds = mtime.second()
+		self.mediaSeconds = mtime.minute() * 60 + mtime.second()
 		self.elbl.setText(mtime.toString())
 
 	def setPosition(self, position):
@@ -1029,7 +1030,8 @@ if __name__ == "__main__":
 
 		home = MainWindow()
 		widget.addWidget(home)
-		widget.showMaximized()
+		widget.setGeometry(QtCore.QRect(150, 125, 1450, 850))
+		widget.show()
 		sys.exit(app.exec_())
 	except:
 		print("Exit")

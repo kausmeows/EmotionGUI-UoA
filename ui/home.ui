@@ -20,9 +20,9 @@
    <widget class="QPushButton" name="visualise_button">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>370</x>
       <y>350</y>
-      <width>231</width>
+      <width>321</width>
       <height>151</height>
      </rect>
     </property>
@@ -48,9 +48,9 @@ border-radius: 20px
    <widget class="QLabel" name="label1">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>140</x>
       <y>150</y>
-      <width>681</width>
+      <width>1131</width>
       <height>161</height>
      </rect>
     </property>
@@ -73,9 +73,9 @@ border-radius: 20px
    <widget class="QPushButton" name="annotate_button">
     <property name="geometry">
      <rect>
-      <x>760</x>
+      <x>740</x>
       <y>350</y>
-      <width>221</width>
+      <width>321</width>
       <height>151</height>
      </rect>
     </property>
@@ -98,9 +98,9 @@ border-radius: 20px
    <widget class="QPushButton" name="liveAudio_button">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>550</x>
       <y>540</y>
-      <width>241</width>
+      <width>331</width>
       <height>151</height>
      </rect>
     </property>
