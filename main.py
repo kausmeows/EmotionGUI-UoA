@@ -9,7 +9,7 @@ import librosa as lbr
 from PyQt5 import QtWidgets, QtCore, uic
 from pydub import AudioSegment, silence
 from PyQt5.QtCore import QDir, Qt, QUrl, QTime
-from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
+from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton, QMessageBox
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QDir, Qt, QUrl, QTimer
 from PyQt5.QtGui import QIcon
@@ -134,6 +134,8 @@ class visualisationScreen(QWidget):
 			QtWidgets.QPushButton, 'pushButton_8')
 		self.homeB.clicked.connect(self.goto_home)
 		# -------------------------------------------------------------
+  
+		self.info_csv_btn.clicked.connect(self.openInfoBox)
 
 		# a figure instance to plot on
 		self.figure = plt.figure()
@@ -156,6 +158,14 @@ class visualisationScreen(QWidget):
 		layout.addWidget(self.canvas)
 		# layout.addWidget(self.button)
 		self.setLayout(layout)
+  
+	def openInfoBox(self):
+		msg = QMessageBox()
+		msg.setWindowTitle("Information")
+		msg.setText("To plot a CSV file using this application, please make sure that the the first three columns have the titles 'Time', 'Valence' and 'Arousal' respectively. The coordinates of the points to be plotted are then below the respective columns.")
+		msg.setIcon(QMessageBox.Information)
+		msg.setStandardButtons(QMessageBox.Cancel)
+		msg.exec_()
 
 	def createCircle(self):
 		self.figure.clear()
@@ -548,6 +558,8 @@ class annotationScreen(QMainWindow):
 		va_layout = self.va_plot
 		va_layout.addWidget(self.toolbar)
 		va_layout.addWidget(self.canvas)
+  
+		self.info_annotate_button.clicked.connect(self.openInfoBox)
 		
 		self.figure.canvas.mpl_connect(
 			"button_press_event", self.annotateOnClick)
@@ -589,6 +601,15 @@ class annotationScreen(QMainWindow):
 		self.timerClick = QTimer(self)
 		self.timerClick.timeout.connect(lambda: self.autoClicking(None))
 		self.timerClick.start(20)
+  
+	def openInfoBox(self):
+		msg = QMessageBox()
+		msg.setWindowTitle("Information")
+		msg.setText("The annotation section allows users to mark the valence and arousal values of the speech or video signal as a function of time. Deep Learning models are very data-centric and in order to train and be useful at predictions they require a good amount of data to learn from. Over the web or in any public platform the data available for DL training is quite less. There also doesn’t exist any way using which we can create a dataset of emotions according to our needs. The annotation feature of EmotionGUI makes this possible. We can generate CSV files of the emotional data right in the software just by playing and annotating the media right there. This feature will enable the researchers or the open-source world in general, to get good-quality data to train their models.")
+		msg.setIcon(QMessageBox.Information)
+		msg.setStandardButtons(QMessageBox.Cancel)
+		msg.setDetailedText("- Open an mp4 or wav file from the testing/WAV Files or testing/MP4 Files folder by clicking on the 'Open Video/Audio File' button. \n- Play the media and annotate the emotions on the V-A plot on the rightSave the valence-arousal points into a csv file by clicking 'Save as CSV' button. \n- If you select a WAV file, you will be able to see its corresponding spectrogram below the media window for more visual cues")
+		msg.exec_()
 
 	def audioVis(self, filepath):
 		# a figure instance to plot on
@@ -879,6 +900,8 @@ class liveAudioScreen(QMainWindow, QWidget):
 	def __init__(self):
 		super(liveAudioScreen, self).__init__()
 		loadUi('ui/audio.ui', self)
+  
+		self.info_audio_btn.clicked.connect(self.openInfoBox)
 
 		self.timer.setText('0 sec')
 		self.stop_pressed = False
@@ -891,7 +914,7 @@ class liveAudioScreen(QMainWindow, QWidget):
 		interval = FS/CHUNKSZ
 		self.t = QtCore.QTimer()
 		self.t.timeout.connect(self.mic.read)
-		self.t.start(1000/interval)  # QTimer takes ms
+		self.t.start(int(1000/interval))  # QTimer takes ms
 
 		self.timerrr = QtCore.QTimer()
 		self.timerrr.timeout.connect(self.update_counter)
@@ -945,6 +968,16 @@ class liveAudioScreen(QMainWindow, QWidget):
 		# prepare window for later use
 		self.win = np.hanning(CHUNKSZ)
 		self.show()
+  
+	def openInfoBox(self):
+		msg = QMessageBox()
+		msg.setWindowTitle("Information")
+		msg.setText("The real-time live audio recording feature makes sure that we are able to record audio in real-time for with respect to our need and then use it to visualize the emotional data of the audio using the machine learning model or annotate that recorded audio for very niche needs and use it for further training.")
+		msg.setIcon(QMessageBox.Information)
+		msg.setStandardButtons(QMessageBox.Cancel)
+		msg.setDetailedText("- Click on the 'Live-Audio' button in the main menu to open a new window.\n- Start recording your audio and see its corresponding spectrogram and waveform for visual cues.\n- Stop the audio stream and save it as a WAV file or as a PNG file.\n- Now you can use the generated wav file in the visualize and annotation sections again.")
+		self.stop_recording()
+		msg.exec_()
 
 	def stop_recording(self):
 		self.mic.stream.stop_stream()

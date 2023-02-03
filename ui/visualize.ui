@@ -70,7 +70,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>10</x>
      <y>240</y>
-     <width>641</width>
+     <width>661</width>
      <height>31</height>
     </rect>
    </property>
@@ -99,7 +99,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>320</x>
      <y>281</y>
-     <width>331</width>
+     <width>351</width>
      <height>41</height>
     </rect>
    </property>
@@ -113,7 +113,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <string>Plot Emotional Data of CSV File</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="info_csv_btn">
    <property name="geometry">
     <rect>
      <x>240</x>
@@ -137,7 +137,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>240</x>
      <y>430</y>
-     <width>411</width>
+     <width>431</width>
      <height>41</height>
     </rect>
    </property>
@@ -175,7 +175,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>10</x>
      <y>360</y>
-     <width>261</width>
+     <width>521</width>
      <height>31</height>
     </rect>
    </property>
@@ -194,7 +194,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>10</x>
      <y>390</y>
-     <width>641</width>
+     <width>661</width>
      <height>31</height>
     </rect>
    </property>
@@ -278,7 +278,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QTextEdit" name="valence_field">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>110</x>
      <y>600</y>
      <width>221</width>
      <height>31</height>
@@ -288,7 +288,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QTextEdit" name="arousal_field">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>110</x>
      <y>660</y>
      <width>221</width>
      <height>31</height>
@@ -298,8 +298,8 @@ fields next to 'Valence' and 'Arousal' and then click plot.
   <widget class="QPushButton" name="plotButton_manual">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>650</y>
+     <x>110</x>
+     <y>710</y>
      <width>71</width>
      <height>41</height>
     </rect>
@@ -357,7 +357,7 @@ fields next to 'Valence' and 'Arousal' and then click plot.
     <rect>
      <x>980</x>
      <y>20</y>
-     <width>151</width>
+     <width>211</width>
      <height>21</height>
     </rect>
    </property>
