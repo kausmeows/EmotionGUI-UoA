@@ -901,6 +901,10 @@ class liveAudioScreen(QMainWindow, QWidget):
 		super(liveAudioScreen, self).__init__()
 		loadUi('ui/audio.ui', self)
   
+		self.start = self.findChild(
+		QtWidgets.QPushButton, 'start')
+		self.start.clicked.connect(self.start_recording)
+  
 		self.info_audio_btn.clicked.connect(self.openInfoBox)
 
 		self.timer.setText('0 sec')
@@ -909,16 +913,6 @@ class liveAudioScreen(QMainWindow, QWidget):
 
 		self.mic = MicrophoneRecorder(self.read_collected)
 		self.read_collected.connect(self.update)
-
-		# time (seconds) between reads
-		interval = FS/CHUNKSZ
-		self.t = QtCore.QTimer()
-		self.t.timeout.connect(self.mic.read)
-		self.t.start(int(1000/interval))  # QTimer takes ms
-
-		self.timerrr = QtCore.QTimer()
-		self.timerrr.timeout.connect(self.update_counter)
-		self.timerrr.start(1000)  # QTimer takes ms
 
 		self.img = pg.ImageItem()
 		self.graphicsView.addItem(self.img)
@@ -978,6 +972,17 @@ class liveAudioScreen(QMainWindow, QWidget):
 		msg.setDetailedText("- Click on the 'Live-Audio' button in the main menu to open a new window.\n- Start recording your audio and see its corresponding spectrogram and waveform for visual cues.\n- Stop the audio stream and save it as a WAV file or as a PNG file.\n- Now you can use the generated wav file in the visualize and annotation sections again.")
 		self.stop_recording()
 		msg.exec_()
+  
+	def start_recording(self):
+		# time (seconds) between reads
+		interval = FS/CHUNKSZ
+		self.t = QtCore.QTimer()
+		self.t.timeout.connect(self.mic.read)
+		self.t.start(int(1000/interval))  # QTimer takes ms
+
+		self.timerrr = QtCore.QTimer()
+		self.timerrr.timeout.connect(self.update_counter)
+		self.timerrr.start(1000)  # QTimer takes ms
 
 	def stop_recording(self):
 		self.mic.stream.stop_stream()
