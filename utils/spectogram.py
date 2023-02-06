@@ -6,24 +6,17 @@ pip install pyqtgraph pyaudio PyQt5
 from utils import audio_processing as AP
 import sys
 import atexit
-from PyQt5 import QtCore, uic, QtGui, QtWidgets
+from PyQt5 import QtCore, uic, QtWidgets
 import pyaudio
 import numpy as np
 import threading
 import wave
 from PyQt5.uic import loadUi
-import time
-from scipy.fftpack import fft
-import struct
 from pyqtgraph.Qt import QtCore
 import pyqtgraph as pg
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow, QWidget, QPushButton
 import matplotlib
 import matplotlib.pyplot as plot
-matplotlib.use('TkAgg')
+matplotlib.use('Qt5Agg')
 
 from scipy.io import wavfile
 matplotlib.use('qt5agg')

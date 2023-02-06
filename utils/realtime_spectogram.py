@@ -1,6 +1,5 @@
 from sys import argv, exit
 from platform import system as cursys
-from struct import calcsize
 from os import remove, path, listdir
 import shutil
 from traceback import print_exc as trace_error
@@ -9,17 +8,16 @@ from datetime import datetime
 if cursys() == 'Windows':
     from ctypes import windll
 
-from shutil import copy as shcopy
 from tempfile import gettempdir
 
 from PyQt5 import QtWidgets
 
-from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QMenu, QLineEdit, QLabel, QSpinBox, QCheckBox,
-                             QPushButton, QMessageBox, QWidget, QFileDialog, QComboBox, QTextEdit, QTabWidget, QVBoxLayout, QInputDialog,
-                             QGridLayout, QDoubleSpinBox, QTableWidget, QTableWidgetItem, QHeaderView, QProgressBar, QDesktopWidget,
-                             QStyle, QStyleOptionTitleBar, QSlider)
-from PyQt5.QtCore import QObjectCleanupHandler, Qt, pyqtSlot, pyqtSignal, QObject
-from PyQt5.QtGui import QIcon, QColor, QPalette, QBrush, QLinearGradient, QFont
+from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QLineEdit, QLabel, QSpinBox, QCheckBox,
+                             QPushButton, QMessageBox, QWidget, QFileDialog, QComboBox, QTabWidget, QVBoxLayout, QInputDialog,
+                             QGridLayout, QDoubleSpinBox, QProgressBar, QDesktopWidget,
+                             QStyle, QStyleOptionTitleBar)
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QObject
+from PyQt5.QtGui import QColor, QPalette, QBrush, QLinearGradient, QFont
 from PyQt5.Qt import QThreadPool
 
 from scipy.io import wavfile as sciwavfile
@@ -33,7 +31,6 @@ from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 import audio_processing as AP
-from PyQt5.uic import loadUi
 
 
 #   DEFINE CLASS FOR PROGRAM (TO BE CALLED IN MAIN)
