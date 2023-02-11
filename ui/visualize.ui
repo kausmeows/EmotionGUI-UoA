@@ -151,7 +151,7 @@ friendly.</string>
     </font>
    </property>
    <property name="text">
-    <string>Plot Emotional Data of CSV File</string>
+    <string>Plot Emotional Data of WAV File</string>
    </property>
   </widget>
   <widget class="QPushButton" name="select_wav">
